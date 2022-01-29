@@ -1,4 +1,4 @@
-const { MessageEmbed, Guild } = require("discord.js");
+const { MessageEmbed } = require("discord.js");
 const { prefixes, color } = require("../../config.json");
 
 module.exports = {

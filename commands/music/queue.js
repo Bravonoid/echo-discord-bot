@@ -1,4 +1,3 @@
-const { first, last } = require("cheerio/lib/api/traversing");
 const { MessageEmbed } = require("discord.js");
 const { color } = require("../../config.json");
 
