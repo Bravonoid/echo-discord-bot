@@ -1,0 +1,29 @@
+{
+	"name": "beta-bot",
+	"version": "1.0.0",
+	"description": "Beta discord bot",
+	"main": "index.js",
+	"engines": {
+		"node": "16.13.1",
+		"npm": "8.1.2"
+	},
+	"scripts": {
+		"start": "node index.js",
+		"node .": "node run index.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Bravonoid/Beta-BOT.git"
+	},
+	"keywords": [],
+	"author": "Bravonoid",
+	"license": "ISC",
+	"dependencies": {
+		"@discordjs/opus": "^0.5.3",
+		"@discordjs/voice": "^0.7.5",
+		"axios": "^0.25.0",
+		"cheerio": "^1.0.0-rc.10",
+		"discord-music-player": "^8.3.1",
+		"discord.js": "^13.6.0"
+	}
+}
