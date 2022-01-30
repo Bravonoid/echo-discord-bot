@@ -2,7 +2,7 @@ const { Client, Intents } = require("discord.js");
 const fs = require("fs");
 const { Player } = require("discord-music-player");
 // Development only
-// const { token } = require("./token.json");
+const { TOKEN } = require("./token.json");
 
 const client = new Client({
 	intents: [
@@ -20,6 +20,12 @@ const player = new Player(client, {
 });
 client.player = player;
 
+// Error handler
+process.on("unhandledRejection", (error) => {
+	// console.error("Unhandled promise rejection:", error);
+	return;
+});
+
 const eventFiles = fs
 	.readdirSync("./events")
 	.filter((file) => file.endsWith(".js"));
@@ -33,7 +39,4 @@ for (const file of eventFiles) {
 	}
 }
 
-client.login(process.env.TOKEN);
-
-// development only
-// client.login(token);
+client.login(process.env.TOKEN || TOKEN);

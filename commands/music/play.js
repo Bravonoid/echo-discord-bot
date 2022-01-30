@@ -70,7 +70,6 @@ module.exports = {
 		}
 
 		// play the song
-
 		if (playlist) {
 			const choosenEmbed = new MessageEmbed()
 				.setColor(color)

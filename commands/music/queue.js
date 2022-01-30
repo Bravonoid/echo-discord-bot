@@ -1,5 +1,6 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { color } = require("../../config.json");
+const cat = require("../general/cat");
 
 module.exports = {
 	name: "queue",
@@ -46,33 +47,48 @@ module.exports = {
 			);
 		});
 
-		const message = await msg.channel.send({ embeds: [sendEmbed] });
+		const navigate = new MessageActionRow()
+			.addComponents(
+				new MessageButton()
+					.setCustomId("previous")
+					.setLabel("Previous")
+					.setStyle("PRIMARY")
+					.setDisabled(true)
+			)
+			.addComponents(
+				new MessageButton()
+					.setCustomId("next")
+					.setLabel("Next")
+					.setStyle("PRIMARY")
+					.setDisabled(true)
+			);
 
 		if (songs.length > 5) {
-			await message.react("➡️");
+			navigate.components[1].setDisabled(false);
 		}
 
-		// Message await reactions sections
-		const filter = (reaction, user) => {
-			return reaction.emoji.name === "➡️" || reaction.emoji.name === "⬅️";
-		};
-
-		const collector = message.createReactionCollector({
-			filter,
+		const message = await msg.channel.send({
+			embeds: [sendEmbed],
+			components: [navigate],
 		});
 
-		collector.on("collect", async (reaction, user) => {
-			if (user.id == client.user.id) return;
+		// Buttons area
+		const filter = (i) =>
+			i.customId === "previous" || i.customId === "next";
 
-			message.reactions.removeAll();
+		const collector = msg.channel.createMessageComponentCollector({
+			filter,
+			idle: 15000,
+		});
 
-			if (reaction.emoji.name === "➡️") {
+		collector.on("collect", async (i) => {
+			if (i.customId === "next") {
 				firstIndex += 5;
 				lastIndex += 5;
 				if (lastIndex >= guildQueue.songs.length) {
 					lastIndex = guildQueue.songs.length;
 				}
-			} else if (reaction.emoji.name === "⬅️") {
+			} else if (i.customId === "previous") {
 				firstIndex -= 5;
 				if (lastIndex == guildQueue.songs.length) {
 					lastIndex -= lastIndex % 5;
@@ -98,24 +114,31 @@ module.exports = {
 				);
 			});
 
-			message.edit({ embeds: [editEmbed] });
-
 			if (lastIndex == guildQueue.songs.length) {
-				await message.react("⬅️");
+				navigate.components[0].setDisabled(false);
+				navigate.components[1].setDisabled(true);
 			} else if (firstIndex == 0) {
-				await message.react("➡️");
+				navigate.components[0].setDisabled(true);
+				navigate.components[1].setDisabled(false);
 			} else {
-				try {
-					await message.react("⬅️");
-					await message.react("➡️");
-				} catch (err) {
-					return;
-				}
+				navigate.components[0].setDisabled(false);
+				navigate.components[1].setDisabled(false);
+			}
+
+			try {
+				i.update({ embeds: [editEmbed], components: [navigate] });
+			} catch (err) {
+				message.edit({ embeds: [editEmbed], components: [navigate] });
 			}
 		});
 
-		collector.on("end", async (collected) => {
-			message.reactions.removeAll();
+		collector.on("end", (collected) => {
+			const editEmbed = new MessageEmbed()
+				.setColor(color)
+				.setTitle("QUEUE TIMEOUTS")
+				.setDescription(`Sorry for your inconvenience`);
+
+			message.edit({ embeds: [editEmbed], components: [] });
 		});
 	},
 };

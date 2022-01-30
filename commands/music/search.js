@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { prefixes, color } = require("../../config.json");
 const { Utils } = require("discord-music-player");
 
@@ -53,10 +53,52 @@ module.exports = {
 		const searchEmbed = new MessageEmbed()
 			.setColor(color)
 			.setTitle(`RESULTS FOR ${title.toUpperCase()}`)
+			.setDescription(
+				`Please consider to hit \`Cancel\` before searching another song`
+			)
 			.setThumbnail(client.user.displayAvatarURL())
 			.setFooter({
-				text: "🎶Choose your song!",
+				text: `🎶Choose your song!`,
 			});
+
+		const order = new MessageActionRow()
+			.addComponents(
+				new MessageButton()
+					.setCustomId("1")
+					.setLabel("1")
+					.setStyle("PRIMARY")
+			)
+			.addComponents(
+				new MessageButton()
+					.setCustomId("2")
+					.setLabel("2")
+					.setStyle("PRIMARY")
+			)
+			.addComponents(
+				new MessageButton()
+					.setCustomId("3")
+					.setLabel("3")
+					.setStyle("PRIMARY")
+			)
+			.addComponents(
+				new MessageButton()
+					.setCustomId("4")
+					.setLabel("4")
+					.setStyle("PRIMARY")
+			)
+			.addComponents(
+				new MessageButton()
+					.setCustomId("5")
+					.setLabel("5")
+					.setStyle("PRIMARY")
+			);
+
+		const Cancel = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId("cancel")
+				.setLabel("Cancel")
+				.setStyle("DANGER")
+		);
 
 		if (songs) {
 			songs.forEach((song, i) => {
@@ -65,57 +107,45 @@ module.exports = {
 					`by ${song.author} | (${song.duration})`
 				);
 			});
-			message.edit({ embeds: [searchEmbed] });
+			message.edit({
+				embeds: [searchEmbed],
+				components: [order, Cancel],
+			});
 		}
 
-		try {
-			await message.react("1️⃣");
-			await message.react("2️⃣");
-			await message.react("3️⃣");
-			await message.react("4️⃣");
-			await message.react("5️⃣");
-			await message.react("❌");
-		} catch (err) {
-			return;
-		}
+		// Buttons area
+		const filter = (i) =>
+			i.customId === "1" ||
+			i.customId === "2" ||
+			i.customId === "3" ||
+			i.customId === "4" ||
+			i.customId === "5" ||
+			i.customId === "cancel";
 
-		// Message await reactions sections
-		const filter = (reaction, user) => {
-			return (
-				reaction.emoji.name === "1️⃣" ||
-				reaction.emoji.name === "2️⃣" ||
-				reaction.emoji.name === "3️⃣" ||
-				reaction.emoji.name === "4️⃣" ||
-				reaction.emoji.name === "5️⃣" ||
-				reaction.emoji.name === "❌"
-			);
-		};
-
-		const collector = message.createReactionCollector({
+		const collector = msg.channel.createMessageComponentCollector({
 			filter,
+			idle: 15000,
 		});
 
 		let choosenSong = null;
-		collector.on("collect", (reaction, user) => {
-			if (user.id != msg.author.id) {
-				return;
-			}
+		collector.on("collect", async (i) => {
+			if (i.user.id != msg.author.id) return;
 
-			if (reaction.emoji.name === "1️⃣") {
+			if (i.customId === "1") {
 				choosenSong = songs[0];
-			} else if (reaction.emoji.name === "2️⃣") {
+			} else if (i.customId === "2") {
 				choosenSong = songs[1];
-			} else if (reaction.emoji.name === "3️⃣") {
+			} else if (i.customId === "3") {
 				choosenSong = songs[2];
-			} else if (reaction.emoji.name === "4️⃣") {
+			} else if (i.customId === "4") {
 				choosenSong = songs[3];
-			} else if (reaction.emoji.name === "5️⃣") {
+			} else if (i.customId === "5") {
 				choosenSong = songs[4];
-			} else if (reaction.emoji.name === "❌") {
-				const cancelEmbed = new MessageEmbed().setTitle(
-					"Search has been canceled"
-				);
-				message.edit({ embeds: [cancelEmbed] });
+			} else if (i.customId === "cancel") {
+				const cancelEmbed = new MessageEmbed()
+					.setTitle("Search has been canceled")
+					.setColor(color);
+				message.edit({ embeds: [cancelEmbed], components: [] });
 				empty = true;
 			}
 
@@ -123,30 +153,39 @@ module.exports = {
 		});
 
 		collector.on("end", async (collected) => {
-			message.reactions.removeAll();
+			if (choosenSong) {
+				// play the song
+				if (!empty) {
+					await queue.join(voiceChannel);
+				}
 
-			// play the song
-			await queue.join(voiceChannel);
-
-			let song = await queue.play(choosenSong).catch(() => {
-				if (!guildQueue) queue.stop();
-				if (!empty) msg.channel.send("Song not found");
-			});
-
-			if (song) {
-				// announce the song
-				const choosenEmbed = new MessageEmbed()
-					.setColor(color)
-					.setTitle(`Adding ${song.name} to the queue`)
-					.setFooter({
-						text: `by ${song.author}`,
-					});
-
-				message.edit({ embeds: [choosenEmbed] });
-
-				song.setData({
-					requested: msg.author.username,
+				let song = await queue.play(choosenSong).catch(() => {
+					if (!guildQueue) queue.stop();
+					if (!empty) msg.channel.send("Song not found");
 				});
+
+				if (song) {
+					// announce the song
+					const choosenEmbed = new MessageEmbed()
+						.setColor(color)
+						.setTitle(`Adding ${song.name} to the queue`)
+						.setFooter({
+							text: `by ${song.author}`,
+						});
+
+					message.edit({ embeds: [choosenEmbed], components: [] });
+
+					song.setData({
+						requested: msg.author.username,
+					});
+				}
+			} else {
+				const editEmbed = new MessageEmbed()
+					.setColor(color)
+					.setTitle("SEARCH TIMEOUTS")
+					.setDescription(`Sorry for your inconvenience`);
+
+				message.edit({ embeds: [editEmbed], components: [] });
 			}
 		});
 	},
