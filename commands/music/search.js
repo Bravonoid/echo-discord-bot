@@ -10,6 +10,7 @@ module.exports = {
 			return msg.channel.send("Please join a voice channel first");
 
 		const voiceChannel = msg.member.voice.channel;
+		let empty = false;
 
 		// Check for another call from other channel
 		if (guildQueue && guildQueue.songs[0]) {
@@ -21,27 +22,38 @@ module.exports = {
 						`type \`'stop\` then \`'play\` something to move Beta`
 					);
 
-				return msg.channel.send({ embeds: [exampleEmbed] });
+				msg.channel.send({ embeds: [exampleEmbed] });
+			}
+			empty = true;
+		}
+
+		// Didnt work properly
+		if (guildQueue && guildQueue.data) {
+			if (guildQueue.data.status == "active") {
+				const contentEmbed = new MessageEmbed()
+					.setColor(color)
+					.setTitle(`Someone is currently searching for a song`)
+					.setDescription("Please hit the `Cancel` button first")
+					.setFooter({
+						text: "We hope to solve the problem as soon as possible.",
+					});
+				return msg.channel.send({ embeds: [contentEmbed] });
 			}
 		}
 
 		let queue = client.player.createQueue(msg.guild.id);
 
 		// Check for empty args
-		let empty = false;
 		const title = args.slice(1, args.length).join(" ");
 		if (!title) {
-			empty = true;
-			msg.channel.send(`There's no queue yet, go 'play a song!`);
+			msg.channel.send(`What do you want to search?`);
+			return;
 		}
 
-		let message = null;
-		if (!empty) {
-			const contentEmbed = new MessageEmbed()
-				.setColor(color)
-				.setTitle(`Searching...`);
-			message = await msg.channel.send({ embeds: [contentEmbed] });
-		}
+		const contentEmbed = new MessageEmbed()
+			.setColor(color)
+			.setTitle(`Searching...`);
+		const message = await msg.channel.send({ embeds: [contentEmbed] });
 
 		// Search the content
 		let songs = await Utils.search(title, args, queue, 5).catch((err) => {
@@ -113,6 +125,13 @@ module.exports = {
 			});
 		}
 
+		// FIX PARSING DATA ON QUEUE AND SEARCH
+		if (!empty) {
+			queue.setData({
+				status: "active",
+			});
+		}
+
 		// Buttons area
 		const filter = (i) =>
 			i.customId === "1" ||
@@ -129,7 +148,9 @@ module.exports = {
 
 		let choosenSong = null;
 		collector.on("collect", async (i) => {
-			if (i.user.id != msg.author.id) return;
+			queue.setData({
+				status: "off",
+			});
 
 			if (i.customId === "1") {
 				choosenSong = songs[0];
@@ -179,12 +200,11 @@ module.exports = {
 						requested: msg.author.username,
 					});
 				}
-			} else {
+			} else if (!empty) {
 				const editEmbed = new MessageEmbed()
 					.setColor(color)
 					.setTitle("SEARCH TIMEOUTS")
 					.setDescription(`Sorry for your inconvenience`);
-
 				message.edit({ embeds: [editEmbed], components: [] });
 			}
 		});

@@ -44,8 +44,7 @@ module.exports = {
 		collector.on("end", (collected) => {
 			const endEmbed = new MessageEmbed()
 				.setColor(color)
-				.setTitle("Times up!")
-				.setDescription("Thanks for asking");
+				.setTitle("Times up!");
 			message.channel.send({ embeds: [endEmbed] });
 		});
 	},
