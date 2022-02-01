@@ -2,7 +2,6 @@ const {
 	commands,
 	musicCommands,
 	gameCommands,
-	nodesFiles,
 } = require("../config/commandHandler");
 const { prefixes } = require("../config.json");
 
@@ -50,8 +49,7 @@ module.exports = {
 					commands,
 					client,
 					musicCommands,
-					gameCommands,
-					nodesFiles
+					gameCommands
 				);
 		} else if (musicFound) {
 			let guildQueue = client.player.getQueue(msg.guild.id);

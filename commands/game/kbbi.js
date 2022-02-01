@@ -4,7 +4,7 @@ const { prefixes, color } = require("../../config.json");
 
 module.exports = {
 	name: "kbbi",
-	description: `Minigame based on KBBI\n\`${prefixes}kbbi ?players\``,
+	description: `Minigame based on KBBI \`${prefixes}kbbi #players\``,
 	async execute(msg, args) {
 		const entryEmbed = new MessageEmbed()
 			.setColor(color)

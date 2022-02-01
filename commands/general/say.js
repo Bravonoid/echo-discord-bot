@@ -1,6 +1,6 @@
 module.exports = {
 	name: "say",
-	description: "Command Beta\n`'say ?thing`",
+	description: "Command Beta `'say #something`",
 	execute(msg, args) {
 		if (args[1]) {
 			args.shift();

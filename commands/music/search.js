@@ -4,7 +4,7 @@ const { Utils } = require("discord-music-player");
 
 module.exports = {
 	name: "search",
-	description: `Search a song\n\`${prefixes}search #title\``,
+	description: `Search a song \`${prefixes}search #content\``,
 	async execute(msg, args, client, guildQueue) {
 		if (!msg.member.voice.channel)
 			return msg.channel.send("Please join a voice channel first");
@@ -111,13 +111,12 @@ module.exports = {
 
 		// Buttons area
 		const filter = (i) =>
-			(i.customId === one ||
-				i.customId === two ||
-				i.customId === three ||
-				i.customId === four ||
-				i.customId === five ||
-				i.customId === cancel) &&
-			i.user.id == msg.author.id;
+			i.customId === one ||
+			i.customId === two ||
+			i.customId === three ||
+			i.customId === four ||
+			i.customId === five ||
+			i.customId === cancel;
 
 		const collector = msg.channel.createMessageComponentCollector({
 			filter,

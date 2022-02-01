@@ -1,4 +1,5 @@
 {
 	"color": "#3498DB",
-	"prefixes": "'"
+	"prefixes": "'",
+	"version": "1.0.1"
 }

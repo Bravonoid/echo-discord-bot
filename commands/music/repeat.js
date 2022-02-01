@@ -4,7 +4,7 @@ const { prefixes } = require("../../config.json");
 module.exports = {
 	name: "repeat",
 	alias: "r",
-	description: `Toggle loop\n\`${prefixes}repeat #mode\``,
+	description: `Toggle loop \`${prefixes}repeat #mode\``,
 	async execute(msg, args, client, guildQueue) {
 		if (!guildQueue) {
 			return msg.channel.send("There's no queue yet, go 'play a song!");

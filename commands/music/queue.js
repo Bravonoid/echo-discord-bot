@@ -4,7 +4,7 @@ const { color } = require("../../config.json");
 module.exports = {
 	name: "queue",
 	alias: "q",
-	description: "Songs list",
+	description: "Songs list inside the queue",
 	async execute(msg, args, client, guildQueue) {
 		if (!guildQueue || guildQueue.songs.length == 0) {
 			return msg.channel.send("There's no queue yet, go 'play a song!");
