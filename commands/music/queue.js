@@ -1,5 +1,6 @@
 const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { color } = require("../../config.json");
+const { Utils } = require("discord-music-player");
 
 module.exports = {
 	name: "queue",
@@ -57,10 +58,20 @@ module.exports = {
 			navigate.components[1].setDisabled(false);
 		}
 
+		// Total times
+		let totalMs = 0;
+		songs.forEach((song) => {
+			const ms = Utils.timeToMs(song.duration);
+			totalMs += ms;
+		});
+		const totalTime = Utils.msToTime(totalMs);
+
 		const sendEmbed = new MessageEmbed()
 			.setColor(color)
 			.setTitle("QUEUE")
-			.setDescription(`Total ${guildQueue.songs.length} songs`)
+			.setDescription(
+				`**${guildQueue.songs.length}** songs in queue with total **(${totalTime})** minutes`
+			)
 			.setThumbnail(client.user.displayAvatarURL())
 			.setFooter({
 				text: `${status}\n🎶Enjoy!`,
@@ -104,7 +115,9 @@ module.exports = {
 			const editEmbed = new MessageEmbed()
 				.setColor(color)
 				.setTitle("QUEUE")
-				.setDescription(`Total ${guildQueue.songs.length} songs`)
+				.setDescription(
+					`**${guildQueue.songs.length}** songs in queue with total **(${totalTime})** minutes`
+				)
 				.setThumbnail(client.user.displayAvatarURL())
 				.setFooter({
 					text: `${status}\n🎶Enjoy!`,
