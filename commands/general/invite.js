@@ -2,17 +2,15 @@ const { MessageEmbed } = require("discord.js");
 const { color } = require("../../config.json");
 
 module.exports = {
-	name: "ping",
-	description: "Pinging Beta",
+	name: "invite",
+	description: "Invite Beta to your desired server",
 	execute(msg) {
 		const pingEmbed = new MessageEmbed()
 			.setColor(color)
-			.setTitle(
-				`Current latency: ${Math.abs(
-					Date.now() - msg.createdTimestamp
-				)}ms`
-			)
-			.setTimestamp();
+			.setTitle("Invite Me!")
+			.setURL(
+				"https://discord.com/api/oauth2/authorize?client_id=930670709695463464&permissions=8&scope=bot%20applications.commands"
+			);
 
 		msg.channel.send({ embeds: [pingEmbed] });
 	},

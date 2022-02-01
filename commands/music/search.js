@@ -1,15 +1,16 @@
-const { MessageEmbed } = require("discord.js");
+const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { prefixes, color } = require("../../config.json");
 const { Utils } = require("discord-music-player");
 
 module.exports = {
 	name: "search",
-	description: `Search a song\n\`${prefixes}search #title\``,
+	description: `Search a song \`${prefixes}search #content\``,
 	async execute(msg, args, client, guildQueue) {
 		if (!msg.member.voice.channel)
 			return msg.channel.send("Please join a voice channel first");
 
 		const voiceChannel = msg.member.voice.channel;
+		let empty = false;
 
 		// Check for another call from other channel
 		if (guildQueue && guildQueue.songs[0]) {
@@ -21,27 +22,24 @@ module.exports = {
 						`type \`'stop\` then \`'play\` something to move Beta`
 					);
 
-				return msg.channel.send({ embeds: [exampleEmbed] });
+				msg.channel.send({ embeds: [exampleEmbed] });
 			}
+			empty = true;
 		}
 
 		let queue = client.player.createQueue(msg.guild.id);
 
 		// Check for empty args
-		let empty = false;
 		const title = args.slice(1, args.length).join(" ");
 		if (!title) {
-			empty = true;
-			msg.channel.send(`There's no queue yet, go 'play a song!`);
+			msg.channel.send(`What do you want to search?`);
+			return;
 		}
 
-		let message = null;
-		if (!empty) {
-			const contentEmbed = new MessageEmbed()
-				.setColor(color)
-				.setTitle(`Searching...`);
-			message = await msg.channel.send({ embeds: [contentEmbed] });
-		}
+		const contentEmbed = new MessageEmbed()
+			.setColor(color)
+			.setTitle(`Searching...`);
+		const message = await msg.channel.send({ embeds: [contentEmbed] });
 
 		// Search the content
 		let songs = await Utils.search(title, args, queue, 5).catch((err) => {
@@ -55,8 +53,48 @@ module.exports = {
 			.setTitle(`RESULTS FOR ${title.toUpperCase()}`)
 			.setThumbnail(client.user.displayAvatarURL())
 			.setFooter({
-				text: "🎶Choose your song!",
+				text: `🎶Choose your song!`,
 			});
+
+		// Random ID
+		const one = Math.random().toString();
+		const two = Math.random().toString();
+		const three = Math.random().toString();
+		const four = Math.random().toString();
+		const five = Math.random().toString();
+		const cancel = Math.random().toString();
+
+		const order = new MessageActionRow()
+			.addComponents(
+				new MessageButton()
+					.setCustomId(one)
+					.setLabel("1")
+					.setStyle("PRIMARY")
+			)
+			.addComponents(
+				new MessageButton()
+					.setCustomId(two)
+					.setLabel("2")
+					.setStyle("PRIMARY")
+			)
+			.addComponents(
+				new MessageButton()
+					.setCustomId(three)
+					.setLabel("3")
+					.setStyle("PRIMARY")
+			)
+			.addComponents(
+				new MessageButton()
+					.setCustomId(four)
+					.setLabel("4")
+					.setStyle("PRIMARY")
+			)
+			.addComponents(
+				new MessageButton()
+					.setCustomId(five)
+					.setLabel("5")
+					.setStyle("PRIMARY")
+			);
 
 		if (songs) {
 			songs.forEach((song, i) => {
@@ -65,88 +103,68 @@ module.exports = {
 					`by ${song.author} | (${song.duration})`
 				);
 			});
-			message.edit({ embeds: [searchEmbed] });
+			message.edit({
+				embeds: [searchEmbed],
+				components: [order],
+			});
 		}
 
-		try {
-			await message.react("1️⃣");
-			await message.react("2️⃣");
-			await message.react("3️⃣");
-			await message.react("4️⃣");
-			await message.react("5️⃣");
-			await message.react("❌");
-		} catch (err) {
-			return;
-		}
+		// Buttons area
+		const filter = (i) =>
+			i.customId === one ||
+			i.customId === two ||
+			i.customId === three ||
+			i.customId === four ||
+			i.customId === five ||
+			i.customId === cancel;
 
-		// Message await reactions sections
-		const filter = (reaction, user) => {
-			return (
-				reaction.emoji.name === "1️⃣" ||
-				reaction.emoji.name === "2️⃣" ||
-				reaction.emoji.name === "3️⃣" ||
-				reaction.emoji.name === "4️⃣" ||
-				reaction.emoji.name === "5️⃣" ||
-				reaction.emoji.name === "❌"
-			);
-		};
-
-		const collector = message.createReactionCollector({
+		const collector = msg.channel.createMessageComponentCollector({
 			filter,
+			max: 1,
 		});
 
 		let choosenSong = null;
-		collector.on("collect", (reaction, user) => {
-			if (user.id != msg.author.id) {
-				return;
-			}
+		collector.on("end", async (i) => {
+			i = i.first();
 
-			if (reaction.emoji.name === "1️⃣") {
+			if (i.customId === one) {
 				choosenSong = songs[0];
-			} else if (reaction.emoji.name === "2️⃣") {
+			} else if (i.customId === two) {
 				choosenSong = songs[1];
-			} else if (reaction.emoji.name === "3️⃣") {
+			} else if (i.customId === three) {
 				choosenSong = songs[2];
-			} else if (reaction.emoji.name === "4️⃣") {
+			} else if (i.customId === four) {
 				choosenSong = songs[3];
-			} else if (reaction.emoji.name === "5️⃣") {
+			} else if (i.customId === five) {
 				choosenSong = songs[4];
-			} else if (reaction.emoji.name === "❌") {
-				const cancelEmbed = new MessageEmbed().setTitle(
-					"Search has been canceled"
-				);
-				message.edit({ embeds: [cancelEmbed] });
-				empty = true;
 			}
 
-			collector.stop();
-		});
+			if (choosenSong) {
+				// play the song
+				if (!empty) {
+					await queue.join(voiceChannel);
+				}
 
-		collector.on("end", async (collected) => {
-			message.reactions.removeAll();
-
-			// play the song
-			await queue.join(voiceChannel);
-
-			let song = await queue.play(choosenSong).catch(() => {
-				if (!guildQueue) queue.stop();
-				if (!empty) msg.channel.send("Song not found");
-			});
-
-			if (song) {
-				// announce the song
-				const choosenEmbed = new MessageEmbed()
-					.setColor(color)
-					.setTitle(`Adding ${song.name} to the queue`)
-					.setFooter({
-						text: `by ${song.author}`,
-					});
-
-				message.edit({ embeds: [choosenEmbed] });
-
-				song.setData({
-					requested: msg.author.username,
+				let song = await queue.play(choosenSong).catch(() => {
+					if (!guildQueue) queue.stop();
+					if (!empty) msg.channel.send("Song not found");
 				});
+
+				if (song) {
+					// announce the song
+					const choosenEmbed = new MessageEmbed()
+						.setColor(color)
+						.setTitle(`Adding ${song.name} to the queue`)
+						.setFooter({
+							text: `by ${song.author}`,
+						});
+
+					message.edit({ embeds: [choosenEmbed], components: [] });
+
+					song.setData({
+						requested: msg.author.username,
+					});
+				}
 			}
 		});
 	},

@@ -1,60 +1,125 @@
-const { MessageEmbed } = require("discord.js");
-const { prefixes, color } = require("../../config.json");
+const {
+	MessageActionRow,
+	MessageSelectMenu,
+	MessageEmbed,
+	MessageButton,
+} = require("discord.js");
+const { prefixes, color, version } = require("../../config.json");
 
 module.exports = {
 	name: "help",
 	description: "Help centre",
-	execute(
-		msg,
-		args,
-		commands,
-		client,
-		musicCommands,
-		gameCommands,
-		nodesFiles
-	) {
-		// Nodes for the titles
-		const commandName = [];
-		nodesFiles.forEach((node) => {
-			commandName.push(node);
-		});
+	async execute(msg, args, commands, client, musicCommands, gameCommands) {
+		// STARTING POINT
+		// Random ID
+		const menu = Math.random().toString();
+		const row = new MessageActionRow().addComponents(
+			new MessageSelectMenu()
+				.setCustomId(menu)
+				.setPlaceholder("Category")
+				.addOptions([
+					{
+						label: "Miscellaneous",
+						description: "Basic commands",
+						value: "general",
+					},
+					{
+						label: "Games",
+						description: "Games list",
+						value: "game",
+					},
+					{
+						label: "Music",
+						description: "Music station",
+						value: "music",
+					},
+				])
+		);
 
-		// Commands for the descriptions
-		const commandDesc = [];
-		let temp = "";
-		commands.each((e) => {
-			temp += `\`${e.name}\` `;
-		});
-		commandDesc.push(temp);
+		const botName = client.user.username;
 
-		temp = "";
-		gameCommands.each((e) => {
-			temp += `\`${e.name}\` `;
-		});
-		commandDesc.push(temp);
-
-		temp = "";
-		musicCommands.each((e) => {
-			temp += `\`${e.name}\` `;
-		});
-		commandDesc.push(temp);
-
-		let helpEmbed = new MessageEmbed()
+		// Modify help, game, general, and music commands list to be better
+		const startingEmbed = new MessageEmbed()
 			.setColor(color)
-			.setTitle(`${client.user.username.toUpperCase()} AT YOUR SERVICE`)
-			.setDescription(
-				`Use \`${prefixes}\` to trigger ${client.user.username}`
+			.setTitle(`${botName.toUpperCase()} AT YOUR SERVICE`)
+			.setDescription(`Version ${version}`)
+			.addField(
+				`ℹ️ ABOUT`,
+				`${botName} is that kind of bot which are purposely made for most of the basic commands including music, minigames, etc.`
 			)
-			.setThumbnail(client.user.displayAvatarURL())
+			.addField(
+				":signal_strength: STATUS",
+				`As ${botName} is currently still on **development phase**, we can't guarantee that there will be no bugs wandering around. We hope to solve the problems as soon as possible.`
+			)
+			.setImage(client.user.displayAvatarURL())
 			.setFooter({
-				text: `💙Love, ${client.user.username}`,
+				text: `💙Love, ${botName}`,
 			});
-		for (let i = 0; i < commandName.length; i++) {
-			const command = commandName[i];
-			const desc = commandDesc[i];
-			helpEmbed.addField(`__${command.toUpperCase()}__`, desc);
-		}
 
-		msg.channel.send({ embeds: [helpEmbed] });
+		await msg.channel.send({
+			embeds: [startingEmbed],
+			components: [row],
+		});
+
+		// Guide embeds
+		const guideEmbed = new MessageEmbed()
+			.setColor(color)
+			.setTitle(`${botName.toUpperCase()}'S COMMANDS`)
+			.setDescription(`\`\`\`Use ${prefixes} to trigger ${botName}\`\`\``)
+			.setThumbnail(client.user.displayAvatarURL());
+
+		// Menus collector
+		const filter = (i) => i.customId === menu;
+		const collector = msg.channel.createMessageComponentCollector({
+			filter,
+		});
+
+		collector.on("collect", (i) => {
+			let title = "";
+			let description = "";
+			let footer = "";
+			const command = [];
+
+			if (i.values[0] == "general") {
+				commands.each((e) => {
+					command.push([e.name, e.description]);
+				});
+
+				title = `MISCELLANEOUS`;
+				description = `⚙️ Here are some of the basic commands list`;
+				footer = `🥂Cheers!`;
+			} else if (i.values[0] == "game") {
+				gameCommands.each((e) => {
+					command.push([e.name, e.description]);
+				});
+
+				title = `GAMING ROOM`;
+				description = `👏 Fun stuff to play along with your friends\n(if you even have one 🤔)`;
+				footer = `🎮Have fun!`;
+			} else if (i.values[0] == "music") {
+				musicCommands.each((e) => {
+					command.push([e.name, e.description]);
+				});
+
+				title = `MUSIC STATION`;
+				description = `🎧 Enjoy your favorite song with these commands\n(There's also some shorthands for your laziness)\n\`\`\`e.g: 'p is 'play\`\`\``;
+				footer = `🎵Happy listening!`;
+			}
+
+			const choosenEmbed = new MessageEmbed()
+				.setColor(color)
+				.setTitle(title)
+				.setDescription(description)
+				.setFooter({ text: footer });
+
+			for (let i = 0; i < command.length; i++) {
+				choosenEmbed.addField(`__${command[i][0]}__`, command[i][1]);
+			}
+
+			i.update({
+				embeds: [guideEmbed, choosenEmbed],
+				components: [row],
+			});
+		});
 	},
 };

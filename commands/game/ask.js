@@ -3,7 +3,7 @@ const { color } = require("../../config.json");
 
 module.exports = {
 	name: "ask",
-	description: "Ask anything",
+	description: "Ask me anything",
 	async execute(msg) {
 		const pingEmbed = new MessageEmbed()
 			.setColor(color)
@@ -44,8 +44,7 @@ module.exports = {
 		collector.on("end", (collected) => {
 			const endEmbed = new MessageEmbed()
 				.setColor(color)
-				.setTitle("Times up!")
-				.setDescription("Thanks for asking");
+				.setTitle("Times up!");
 			message.channel.send({ embeds: [endEmbed] });
 		});
 	},

@@ -1,7 +1,7 @@
 module.exports = {
 	name: "skip",
 	alias: "s",
-	description: "Skip a song",
+	description: "Skip ongoing song",
 	async execute(msg, args, client, guildQueue) {
 		if (!guildQueue) {
 			return msg.channel.send("There's no queue yet, go 'play a song!");

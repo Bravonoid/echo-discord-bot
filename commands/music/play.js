@@ -4,7 +4,7 @@ const { prefixes, color } = require("../../config.json");
 module.exports = {
 	name: "play",
 	alias: "p",
-	description: `Play something\n\`${prefixes}play #content\``,
+	description: `Play a song or playlist \`${prefixes}play #content\``,
 	async execute(msg, args, client, guildQueue) {
 		if (!msg.member.voice.channel)
 			return msg.channel.send("Please join a voice channel first");
@@ -70,7 +70,6 @@ module.exports = {
 		}
 
 		// play the song
-
 		if (playlist) {
 			const choosenEmbed = new MessageEmbed()
 				.setColor(color)

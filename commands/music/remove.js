@@ -2,7 +2,7 @@ const { prefixes } = require("../../config.json");
 
 module.exports = {
 	name: "remove",
-	description: `Remove a song\n\`${prefixes}remove #order\``,
+	description: `Remove a song \`${prefixes}remove #number\``,
 	async execute(msg, args, client, guildQueue) {
 		if (!guildQueue) {
 			return msg.channel.send("There's no queue yet, go 'play a song!");

@@ -20,6 +20,12 @@ const player = new Player(client, {
 });
 client.player = player;
 
+// Error handler
+// process.on("unhandledRejection", (error) => {
+// 	console.error("Unhandled promise rejection:", error);
+// 	// return;
+// });
+
 const eventFiles = fs
 	.readdirSync("./events")
 	.filter((file) => file.endsWith(".js"));

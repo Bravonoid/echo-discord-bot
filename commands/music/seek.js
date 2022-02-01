@@ -3,7 +3,7 @@ const { prefixes } = require("../../config.json");
 
 module.exports = {
 	name: "seek",
-	description: `Seek forward\n\`${prefixes}seek #time\``,
+	description: `Seek forward \`${prefixes}seek #time\``,
 	async execute(msg, args, client, guildQueue) {
 		if (!guildQueue) {
 			return msg.channel.send("There's no queue yet, go 'play a song!");

@@ -1,6 +1,6 @@
 module.exports = {
 	name: "pause",
-	description: "Pause a song",
+	description: "Pause ongoing song",
 	async execute(msg, args, client, guildQueue) {
 		if (!guildQueue) {
 			return msg.channel.send("There's no queue yet, go 'play a song!");

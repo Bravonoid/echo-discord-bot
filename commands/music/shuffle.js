@@ -8,18 +8,19 @@ module.exports = {
 		guildQueue.shuffle();
 		msg.channel.send("Shuffled the queue");
 
+		const temp = [];
 		if (guildQueue.data) {
-			const tempData = guildQueue.data.isRepeat;
-			if (guildQueue.data.isRepeat) {
-				guildQueue.setData({
-					isShuffled: true,
-					isRepeat: tempData,
-				});
+			for (const data in guildQueue.data) {
+				temp.push([data, guildQueue.data[data]]);
 			}
-		} else {
-			guildQueue.setData({
-				isShuffled: true,
-			});
+		}
+
+		guildQueue.setData({
+			shuffled: "🔀 Shuffled",
+		});
+
+		for (let i = 0; i < temp.length; i++) {
+			guildQueue.data[temp[i][0]] = temp[i][1];
 		}
 	},
 };

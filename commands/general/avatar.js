@@ -3,7 +3,7 @@ const { prefixes, color } = require("../../config.json");
 
 module.exports = {
 	name: "avatar",
-	description: `Display avatar\n\`${prefixes}avatar ?user\``,
+	description: `Display avatar \`${prefixes}avatar @user\``,
 	execute(msg) {
 		const mention = msg.mentions.users.first() || msg.author;
 

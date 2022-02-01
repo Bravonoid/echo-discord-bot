@@ -3,7 +3,7 @@ const { prefixes, color } = require("../../config.json");
 
 module.exports = {
 	name: "info",
-	description: `Details\n\`${prefixes}info ?user\``,
+	description: `Details Information\`${prefixes}info @user\``,
 	execute(msg, args) {
 		// FIX INFO AND OTHERS INFORMATION
 		const mention = msg.mentions.users.first() || msg.author;

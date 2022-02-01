@@ -1,10 +1,6 @@
 const { Collection } = require("discord.js");
 const fs = require("fs");
 
-// node of commands
-const nodesFiles = fs.readdirSync("./commands");
-[nodesFiles[0], nodesFiles[1]] = [nodesFiles[1], nodesFiles[0]];
-
 // general commands
 const commands = new Collection();
 const files = fs
@@ -38,4 +34,4 @@ for (const file of gameFiles) {
 	gameCommands.set(command.name, command);
 }
 
-module.exports = { commands, musicCommands, gameCommands, nodesFiles };
+module.exports = { commands, musicCommands, gameCommands };

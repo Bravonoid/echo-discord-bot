@@ -1,6 +1,6 @@
 module.exports = {
 	name: "spam",
-	description: "Spam message\n`'spam ?thing`",
+	description: "Spam message `'spam #something`",
 	execute(msg, args) {
 		if (args[1]) {
 			args.shift();

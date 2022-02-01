@@ -2,7 +2,6 @@ const {
 	commands,
 	musicCommands,
 	gameCommands,
-	nodesFiles,
 } = require("../config/commandHandler");
 const { prefixes } = require("../config.json");
 
@@ -40,8 +39,6 @@ module.exports = {
 			if (e.name == args[0]) gameFound = true;
 		});
 
-		let guildQueue = client.player.getQueue(msg.guild.id);
-
 		// execute command if found on each category
 		if (found) {
 			commands
@@ -52,10 +49,10 @@ module.exports = {
 					commands,
 					client,
 					musicCommands,
-					gameCommands,
-					nodesFiles
+					gameCommands
 				);
 		} else if (musicFound) {
+			let guildQueue = client.player.getQueue(msg.guild.id);
 			musicCommands.get(args[0]).execute(msg, args, client, guildQueue);
 		} else if (gameFound) {
 			gameCommands.get(args[0]).execute(msg, args);
