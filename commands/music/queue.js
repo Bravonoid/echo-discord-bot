@@ -1,6 +1,7 @@
 const { MessageActionRow, MessageButton, MessageEmbed } = require("discord.js");
 const { color } = require("../../config.json");
 const { Utils } = require("discord-music-player");
+const { last } = require("cheerio/lib/api/traversing");
 
 module.exports = {
 	name: "queue",
@@ -106,7 +107,11 @@ module.exports = {
 			} else if (i.customId === previous) {
 				firstIndex -= 5;
 				if (lastIndex == guildQueue.songs.length) {
-					lastIndex -= lastIndex % 5;
+					if (guildQueue.songs.length % 5 == 0) {
+						lastIndex -= 5;
+					} else {
+						lastIndex -= lastIndex % 5;
+					}
 				} else {
 					lastIndex -= 5;
 				}
