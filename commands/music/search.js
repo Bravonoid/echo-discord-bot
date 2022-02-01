@@ -27,20 +27,6 @@ module.exports = {
 			empty = true;
 		}
 
-		// Didnt work properly
-		if (guildQueue && guildQueue.data) {
-			if (guildQueue.data.status == "active") {
-				const contentEmbed = new MessageEmbed()
-					.setColor(color)
-					.setTitle(`Someone is currently searching for a song`)
-					.setDescription("Please hit the `Cancel` button first")
-					.setFooter({
-						text: "We hope to solve the problem as soon as possible.",
-					});
-				return msg.channel.send({ embeds: [contentEmbed] });
-			}
-		}
-
 		let queue = client.player.createQueue(msg.guild.id);
 
 		// Check for empty args
@@ -65,52 +51,50 @@ module.exports = {
 		const searchEmbed = new MessageEmbed()
 			.setColor(color)
 			.setTitle(`RESULTS FOR ${title.toUpperCase()}`)
-			.setDescription(
-				`Please consider to hit \`Cancel\` before searching another song`
-			)
 			.setThumbnail(client.user.displayAvatarURL())
 			.setFooter({
 				text: `🎶Choose your song!`,
 			});
 
+		// Random ID
+		const one = Math.random().toString();
+		const two = Math.random().toString();
+		const three = Math.random().toString();
+		const four = Math.random().toString();
+		const five = Math.random().toString();
+		const cancel = Math.random().toString();
+
 		const order = new MessageActionRow()
 			.addComponents(
 				new MessageButton()
-					.setCustomId("1")
+					.setCustomId(one)
 					.setLabel("1")
 					.setStyle("PRIMARY")
 			)
 			.addComponents(
 				new MessageButton()
-					.setCustomId("2")
+					.setCustomId(two)
 					.setLabel("2")
 					.setStyle("PRIMARY")
 			)
 			.addComponents(
 				new MessageButton()
-					.setCustomId("3")
+					.setCustomId(three)
 					.setLabel("3")
 					.setStyle("PRIMARY")
 			)
 			.addComponents(
 				new MessageButton()
-					.setCustomId("4")
+					.setCustomId(four)
 					.setLabel("4")
 					.setStyle("PRIMARY")
 			)
 			.addComponents(
 				new MessageButton()
-					.setCustomId("5")
+					.setCustomId(five)
 					.setLabel("5")
 					.setStyle("PRIMARY")
 			);
-
-		const Cancel = new MessageActionRow().addComponents(
-			new MessageButton()
-				.setCustomId("cancel")
-				.setLabel("Cancel")
-				.setStyle("DANGER")
-		);
 
 		if (songs) {
 			songs.forEach((song, i) => {
@@ -121,59 +105,41 @@ module.exports = {
 			});
 			message.edit({
 				embeds: [searchEmbed],
-				components: [order, Cancel],
-			});
-		}
-
-		// FIX PARSING DATA ON QUEUE AND SEARCH
-		if (!empty) {
-			queue.setData({
-				status: "active",
+				components: [order],
 			});
 		}
 
 		// Buttons area
 		const filter = (i) =>
-			i.customId === "1" ||
-			i.customId === "2" ||
-			i.customId === "3" ||
-			i.customId === "4" ||
-			i.customId === "5" ||
-			i.customId === "cancel";
+			(i.customId === one ||
+				i.customId === two ||
+				i.customId === three ||
+				i.customId === four ||
+				i.customId === five ||
+				i.customId === cancel) &&
+			i.user.id == msg.author.id;
 
 		const collector = msg.channel.createMessageComponentCollector({
 			filter,
-			idle: 15000,
+			max: 1,
 		});
 
 		let choosenSong = null;
-		collector.on("collect", async (i) => {
-			queue.setData({
-				status: "off",
-			});
+		collector.on("end", async (i) => {
+			i = i.first();
 
-			if (i.customId === "1") {
+			if (i.customId === one) {
 				choosenSong = songs[0];
-			} else if (i.customId === "2") {
+			} else if (i.customId === two) {
 				choosenSong = songs[1];
-			} else if (i.customId === "3") {
+			} else if (i.customId === three) {
 				choosenSong = songs[2];
-			} else if (i.customId === "4") {
+			} else if (i.customId === four) {
 				choosenSong = songs[3];
-			} else if (i.customId === "5") {
+			} else if (i.customId === five) {
 				choosenSong = songs[4];
-			} else if (i.customId === "cancel") {
-				const cancelEmbed = new MessageEmbed()
-					.setTitle("Search has been canceled")
-					.setColor(color);
-				message.edit({ embeds: [cancelEmbed], components: [] });
-				empty = true;
 			}
 
-			collector.stop();
-		});
-
-		collector.on("end", async (collected) => {
 			if (choosenSong) {
 				// play the song
 				if (!empty) {
@@ -200,12 +166,6 @@ module.exports = {
 						requested: msg.author.username,
 					});
 				}
-			} else if (!empty) {
-				const editEmbed = new MessageEmbed()
-					.setColor(color)
-					.setTitle("SEARCH TIMEOUTS")
-					.setDescription(`Sorry for your inconvenience`);
-				message.edit({ embeds: [editEmbed], components: [] });
 			}
 		});
 	},
