@@ -3,9 +3,18 @@ const { prefixes } = require("../config.json");
 module.exports = {
 	name: "ready",
 	execute(client) {
+		// TRY RICH PRESENCE
+
+		const activities = [
+			{
+				name: `${prefixes}help`,
+				type: `LISTENING`,
+			},
+		];
+
 		console.log(`Logged in as ${client.user.tag}!`);
 		client.user.setPresence({
-			activities: [{ name: `${prefixes}help` }],
+			activities: activities,
 			status: "online",
 		});
 	},

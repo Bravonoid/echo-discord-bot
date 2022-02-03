@@ -38,14 +38,13 @@ module.exports = {
 
 		const botName = client.user.username;
 
-		// Modify help, game, general, and music commands list to be better
 		const startingEmbed = new MessageEmbed()
 			.setColor(color)
 			.setTitle(`${botName.toUpperCase()} AT YOUR SERVICE`)
 			.setDescription(`Version ${version}`)
 			.addField(
 				`ℹ️ ABOUT`,
-				`${botName} is that kind of bot which are purposely made for most of the basic commands including music, minigames, etc.`
+				`${botName} was developed to run most basic commands including music, minigames, etc.`
 			)
 			.addField(
 				":signal_strength: STATUS",
