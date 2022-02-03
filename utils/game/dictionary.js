@@ -12,11 +12,20 @@ async function getWordData(word) {
 
 		// check title
 		let title = data.hwi.hw;
-		title = title.split("*").join("");
-		if (title != word) return;
 
-		const subtitle = `/${data.fl}/`;
-		const meaning = data.shortdef[0];
+		let subtitle = `/${data.fl}/`;
+		let meaning = data.shortdef[0];
+
+		title = title.split("*").join("");
+
+		if (
+			typeof data != "object" ||
+			title.toLowerCase() != word.toLowerCase()
+		) {
+			title = false;
+			subtitle = false;
+			description = false;
+		}
 
 		const result = {
 			title,
@@ -28,7 +37,7 @@ async function getWordData(word) {
 
 		return result;
 	} catch (err) {
-		return err;
+		return false;
 	}
 }
 
@@ -37,9 +46,8 @@ async function getWordData(word) {
 // getWordData("dilema");
 // getWordData("earth");
 // getWordData("krona");
-// getWordData("looping");
 // getWordData("loop");
 // getWordData("done");
-// getWordData("rounding");
+// getWordData("hills");
 
 module.exports = getWordData;

@@ -151,6 +151,33 @@ module.exports = {
 					timer = 10;
 				}
 
+				if (players.length <= 1) {
+					usernameTurn = "";
+					const exampleEmbed = new MessageEmbed()
+						.setColor(color)
+						.setTitle(
+							`${players[0][0].toUpperCase()} IS THE WINNER!`
+						)
+						.setDescription(
+							`with total **${players[0][1]}** points`
+						)
+						.setFooter({
+							text: `Good game`,
+						});
+
+					for (let i = 0; i < players.length; i++) {
+						exampleEmbed.addField(
+							`${i + 1}. ${players[i][0]} :game_die:${
+								players[i][2]
+							}`,
+							`Points : ${players[i][1]}`
+						);
+					}
+					return m.channel.send({
+						embeds: [exampleEmbed],
+					});
+				}
+
 				const exampleEmbed = new MessageEmbed()
 					.setColor(color)
 					.setTitle(`${title.toUpperCase()} ${subtitle}`)
@@ -264,6 +291,33 @@ module.exports = {
 						);
 
 						timer = 10;
+					}
+
+					if (players.length <= 1) {
+						usernameTurn = "";
+						const exampleEmbed = new MessageEmbed()
+							.setColor(color)
+							.setTitle(
+								`${players[0][0].toUpperCase()} IS THE WINNER!`
+							)
+							.setDescription(
+								`with total **${players[0][1]}** points`
+							)
+							.setFooter({
+								text: `Good game`,
+							});
+
+						for (let i = 0; i < players.length; i++) {
+							exampleEmbed.addField(
+								`${i + 1}. ${players[i][0]} :game_die:${
+									players[i][2]
+								}`,
+								`Points : ${players[i][1]}`
+							);
+						}
+						return m.channel.send({
+							embeds: [exampleEmbed],
+						});
 					}
 
 					const exampleEmbed = new MessageEmbed()
