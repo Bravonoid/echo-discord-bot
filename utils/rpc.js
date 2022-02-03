@@ -1,6 +1,5 @@
 const RPC = require("discord-rpc");
-const browser = typeof window !== "undefined";
-const rpc = new RPC.Client({ transport: browser ? "websocket" : "ipc" });
+const rpc = new RPC.Client({ transport: "ipc" });
 
 const activity = {
 	details: "Classified",
