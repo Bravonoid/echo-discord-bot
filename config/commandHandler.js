@@ -4,11 +4,11 @@ const fs = require("fs");
 // general commands
 const commands = new Collection();
 const files = fs
-	.readdirSync("./commands/general")
+	.readdirSync("./commands/misc")
 	.filter((file) => file.endsWith(".js"));
 
 for (const file of files) {
-	const command = require(`../commands/general/${file}`);
+	const command = require(`../commands/misc/${file}`);
 	commands.set(command.name, command);
 }
 

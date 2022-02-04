@@ -55,7 +55,7 @@ module.exports = {
 			let guildQueue = client.player.getQueue(msg.guild.id);
 			musicCommands.get(args[0]).execute(msg, args, client, guildQueue);
 		} else if (gameFound) {
-			gameCommands.get(args[0]).execute(msg, args);
+			gameCommands.get(args[0]).execute(msg, args, client);
 		}
 	},
 };

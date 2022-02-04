@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const getRandomCat = require("../../utils/randomCat");
+const getRandomCat = require("../../utils/misc/randomCat");
 const { color } = require("../../config.json");
 
 module.exports = {

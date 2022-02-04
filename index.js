@@ -4,7 +4,7 @@ const { Player } = require("discord-music-player");
 
 // Development only
 // require("./utils/rpc");
-// const { TOKEN } = require("./token.json");
+const { TOKEN } = require("./token.json");
 
 const client = new Client({
 	intents: [
