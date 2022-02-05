@@ -15,7 +15,7 @@ module.exports = {
 
 		// Opponents Buttons
 		const opPlayerId = Math.random().toString();
-		const opBetaId = Math.random().toString();
+		const opBotId = Math.random().toString();
 		const opponents = new MessageActionRow()
 			.addComponents(
 				new MessageButton()
@@ -26,8 +26,8 @@ module.exports = {
 			)
 			.addComponents(
 				new MessageButton()
-					.setCustomId(opBetaId)
-					.setLabel("Beta")
+					.setCustomId(opBotId)
+					.setLabel(client.user.username)
 					.setStyle("SECONDARY")
 			);
 
@@ -38,7 +38,7 @@ module.exports = {
 
 		// Select Opponent Respond
 		const filter = (i) =>
-			(i.customId === opPlayerId || i.customId === opBetaId) &&
+			(i.customId === opPlayerId || i.customId === opBotId) &&
 			i.user.id === msg.author.id;
 
 		const collector = message.channel.createMessageComponentCollector({
@@ -126,7 +126,7 @@ module.exports = {
 				bot = false;
 				title = `${player1[0][0].toUpperCase()} vs SOMEONE`;
 				description = `Wait until someone joins your session`;
-			} else if (i.customId === opBetaId) {
+			} else if (i.customId === opBotId) {
 				player2.push([client.user.username, "⭕"]);
 				bot = true;
 				title = `${player1[0][0].toUpperCase()} vs ${client.user.username.toUpperCase()}`;

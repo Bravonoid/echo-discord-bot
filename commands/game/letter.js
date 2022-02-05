@@ -212,7 +212,7 @@ module.exports = {
 							.setDescription("No players left")
 							.setFooter({ text: "" });
 						message.edit({ embeds: [exampleEmbed] });
-						return clearTimeout(countDown);
+						return clearInterval(countDown);
 					}
 
 					message.edit({ embeds: [exampleEmbed] });
@@ -393,7 +393,7 @@ module.exports = {
 						.setDescription("No players left")
 						.setFooter({ text: "" });
 					message.edit({ embeds: [exampleEmbed] });
-					return clearTimeout(countDown);
+					return clearInterval(countDown);
 				}
 
 				message.edit({ embeds: [exampleEmbed] });

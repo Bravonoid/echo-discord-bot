@@ -17,9 +17,11 @@ module.exports = {
 				if (voiceChannel.id != guildQueue.connection.channel.id) {
 					const exampleEmbed = new MessageEmbed()
 						.setColor(color)
-						.setTitle("Beta is currently playing on other channel")
+						.setTitle(
+							`${client.user.username} is currently playing on other channel`
+						)
 						.setDescription(
-							`type \`'stop\` then \`'play\` something to move Beta`
+							`type \`'stop\` then \`'play\` something to move ${client.user.username}`
 						);
 
 					return msg.channel.send({ embeds: [exampleEmbed] });
