@@ -101,8 +101,11 @@ module.exports = {
 			if (usernames.length < maxPlayers) {
 				const exampleEmbed = new MessageEmbed()
 					.setColor(color)
-					.setTitle("LOBBY TIMEOUTS")
-					.setDescription("Make a new 'letter lobby to play");
+					.setTitle("SESSION TIMEOUTS")
+					.setDescription(
+						"Looks like none of your friends want to play with you 🥲"
+					)
+					.setFooter({ text: "Make a new 'letter lobby to play" });
 
 				return message.edit({ embeds: [exampleEmbed], components: [] });
 			} else {
@@ -112,18 +115,34 @@ module.exports = {
 
 				usernameTurn = players[pos][0];
 
-				// Get random word
-				const random = await getRandomWord();
-				const { title, subtitle, description } = await getWordData(
-					random
-				);
+				let titleUndefine = true;
+				let mainTitle;
+				let mainSub;
+				let mainDesc;
 
-				lastSpell = title.substring(title.length - 1, title.length);
+				while (titleUndefine) {
+					// Get random word
+					const random = await getRandomWord();
+					const { title, subtitle, description } = await getWordData(
+						random
+					);
+					if (title) {
+						mainTitle = title;
+						mainSub = subtitle;
+						mainDesc = description;
+						titleUndefine = false;
+					}
+				}
+
+				lastSpell = mainTitle.substring(
+					mainTitle.length - 1,
+					mainTitle.length
+				);
 
 				const exampleEmbed = new MessageEmbed()
 					.setColor(color)
-					.setTitle(`${title.toUpperCase()} ${subtitle}`)
-					.setDescription(`${description}`)
+					.setTitle(`${mainTitle.toUpperCase()} ${mainSub}`)
+					.setDescription(`${mainDesc}`)
 					.setFooter({
 						text: `${usernameTurn}'s turn\nEnter a word starting with '${lastSpell}'`,
 					});
@@ -192,8 +211,8 @@ module.exports = {
 
 					const exampleEmbed = new MessageEmbed()
 						.setColor(color)
-						.setTitle(`${title.toUpperCase()} ${subtitle}`)
-						.setDescription(`${description}`)
+						.setTitle(`${mainTitle.toUpperCase()} ${mainSub}`)
+						.setDescription(`${mainDesc}`)
 						.setFooter({
 							text: `${usernameTurn}'s turn\nEnter a word starting with '${lastSpell}'\n⌚${timer} seconds left'`,
 						});

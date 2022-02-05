@@ -86,15 +86,15 @@ module.exports = {
 
 				title = `MISCELLANEOUS`;
 				description = `⚙️ Here are some of the basic commands list`;
-				footer = `🥂Cheers!`;
+				footer = `🥂 Cheers!`;
 			} else if (i.values[0] == "game") {
 				gameCommands.each((e) => {
 					command.push([e.name, e.description]);
 				});
 
 				title = `GAMING ROOM`;
-				description = `👏 Fun stuff to play along with your friends\n(if you even have one 🤔)`;
-				footer = `🎮Have fun!`;
+				description = `👏 Fun stuff to play along with your friends\n(if you have one 🤔)`;
+				footer = `🎮 Have fun!`;
 			} else if (i.values[0] == "music") {
 				musicCommands.each((e) => {
 					command.push([e.name, e.description]);
@@ -102,7 +102,7 @@ module.exports = {
 
 				title = `MUSIC STATION`;
 				description = `🎧 Enjoy your favorite song with these commands\n(There's also some shorthands for your laziness)\n\`\`\`e.g: 'p is 'play\`\`\``;
-				footer = `🎵Happy listening!`;
+				footer = `🎵 Happy listening!`;
 			}
 
 			const choosenEmbed = new MessageEmbed()
