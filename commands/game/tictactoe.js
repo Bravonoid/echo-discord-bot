@@ -1,9 +1,4 @@
-const {
-	MessageEmbed,
-	MessageActionRow,
-	MessageButton,
-	SystemChannelFlags,
-} = require("discord.js");
+const { MessageEmbed, MessageActionRow, MessageButton } = require("discord.js");
 const { color } = require("../../config.json");
 
 module.exports = {

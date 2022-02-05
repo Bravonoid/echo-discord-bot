@@ -285,100 +285,78 @@ module.exports = {
 						});
 					}
 				}
+			}
+			// assign last spelling
+			lastSpell = title.substring(title.length - 1, title.length);
 
-				// assign last spelling
-				lastSpell = title.substring(title.length - 1, title.length);
+			// assign next turn
+			if (pos + 1 >= players.length) {
+				pos = 0;
+			} else {
+				pos += 1;
+			}
+			usernameTurn = players[pos][0];
 
-				// assign next turn
-				if (pos + 1 >= players.length) {
-					pos = 0;
-				} else {
-					pos += 1;
-				}
-				usernameTurn = players[pos][0];
+			// Save last word
+			lastWord = title;
+			usedWords.push(lastWord);
 
-				// Save last word
-				lastWord = title;
-				usedWords.push(lastWord);
-
-				const exampleEmbed = new MessageEmbed()
-					.setColor(color)
-					.setTitle(`${title.toUpperCase()} ${subtitle}`)
-					.setDescription(`${description}`)
-					.setFooter({
-						text: `${usernameTurn}'s turn\nEnter a word starting with '${lastSpell}'`,
-					});
-				for (let i = 0; i < count; i++) {
-					exampleEmbed.addField(
-						`${i + 1}. ${players[i][0]} ❤️ ${players[i][2]}`,
-						`Points : ${players[i][1]}`
-					);
-				}
-				const message = await m.channel.send({
-					embeds: [exampleEmbed],
+			const exampleEmbed = new MessageEmbed()
+				.setColor(color)
+				.setTitle(`${title.toUpperCase()} ${subtitle}`)
+				.setDescription(`${description}`)
+				.setFooter({
+					text: `${usernameTurn}'s turn\nEnter a word starting with '${lastSpell}'`,
 				});
+			for (let i = 0; i < count; i++) {
+				exampleEmbed.addField(
+					`${i + 1}. ${players[i][0]} ❤️ ${players[i][2]}`,
+					`Points : ${players[i][1]}`
+				);
+			}
+			const message = await m.channel.send({
+				embeds: [exampleEmbed],
+			});
 
-				// Timer sections
-				timer = 10;
-				countDown = setInterval(() => {
-					timer -= 1;
-					if (timer <= 0) {
-						for (player of players) {
-							if (player[0] == usernameTurn) {
-								player[2] -= 1;
-								if (player[2] < 0) {
-									// assign next turn
-									if (pos + 1 >= players.length) {
-										pos = 0;
-									} else {
-										pos += 1;
-									}
-									usernameTurn = players[pos][0];
-									userDelete = player[0];
+			// Timer sections
+			timer = 10;
+			countDown = setInterval(() => {
+				timer -= 1;
+				if (timer <= 0) {
+					for (player of players) {
+						if (player[0] == usernameTurn) {
+							player[2] -= 1;
+							if (player[2] < 0) {
+								// assign next turn
+								if (pos + 1 >= players.length) {
+									pos = 0;
+								} else {
+									pos += 1;
 								}
+								usernameTurn = players[pos][0];
+								userDelete = player[0];
 							}
 						}
-						players = players.filter(
-							(player) => player[0] != userDelete
-						);
-
-						timer = 10;
 					}
+					players = players.filter(
+						(player) => player[0] != userDelete
+					);
 
-					if (players.length <= 1) {
-						usernameTurn = "";
-						const exampleEmbed = new MessageEmbed()
-							.setColor(color)
-							.setTitle(
-								`${players[0][0].toUpperCase()} IS THE WINNER!`
-							)
-							.setDescription(
-								`with total **${players[0][1]}** points`
-							)
-							.setFooter({
-								text: `Good game`,
-							});
+					timer = 10;
+				}
 
-						for (let i = 0; i < players.length; i++) {
-							exampleEmbed.addField(
-								`${i + 1}. ${players[i][0]} ❤️ ${
-									players[i][2]
-								}`,
-								`Points : ${players[i][1]}`
-							);
-						}
-						message.edit({
-							embeds: [exampleEmbed],
-						});
-						return clearInterval(countDown);
-					}
-
+				if (players.length <= 1) {
+					usernameTurn = "";
 					const exampleEmbed = new MessageEmbed()
 						.setColor(color)
-						.setTitle(`${title.toUpperCase()} ${subtitle}`)
-						.setDescription(`${description}`)
+						.setTitle(
+							`${players[0][0].toUpperCase()} IS THE WINNER!`
+						)
+						.setDescription(
+							`with total **${players[0][1]}** points`
+						)
 						.setFooter({
-							text: `${usernameTurn}'s turn\nEnter a word starting with '${lastSpell}'\n⌚${timer} seconds left'`,
+							text: `Good game`,
 						});
 
 					for (let i = 0; i < players.length; i++) {
@@ -387,20 +365,39 @@ module.exports = {
 							`Points : ${players[i][1]}`
 						);
 					}
+					message.edit({
+						embeds: [exampleEmbed],
+					});
+					return clearInterval(countDown);
+				}
 
-					// check if there any players
-					if (players.length <= 0) {
-						exampleEmbed
-							.setTitle(`GAME OVER`)
-							.setDescription("No players left")
-							.setFooter({ text: "" });
-						message.edit({ embeds: [exampleEmbed] });
-						return clearTimeout(countDown);
-					}
+				const exampleEmbed = new MessageEmbed()
+					.setColor(color)
+					.setTitle(`${title.toUpperCase()} ${subtitle}`)
+					.setDescription(`${description}`)
+					.setFooter({
+						text: `${usernameTurn}'s turn\nEnter a word starting with '${lastSpell}'\n⌚${timer} seconds left'`,
+					});
 
+				for (let i = 0; i < players.length; i++) {
+					exampleEmbed.addField(
+						`${i + 1}. ${players[i][0]} ❤️ ${players[i][2]}`,
+						`Points : ${players[i][1]}`
+					);
+				}
+
+				// check if there any players
+				if (players.length <= 0) {
+					exampleEmbed
+						.setTitle(`GAME OVER`)
+						.setDescription("No players left")
+						.setFooter({ text: "" });
 					message.edit({ embeds: [exampleEmbed] });
-				}, 1000);
-			}
+					return clearTimeout(countDown);
+				}
+
+				message.edit({ embeds: [exampleEmbed] });
+			}, 1000);
 		});
 	},
 };
