@@ -60,6 +60,15 @@ module.exports = {
 				.setStyle("SUCCESS")
 		);
 
+		// Ready button
+		const readyId = Math.random().toString();
+		const ready = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId(readyId)
+				.setLabel("Start")
+				.setStyle("SUCCESS")
+		);
+
 		// TicTacToe Buttons
 		const numberId = [];
 		for (let i = 0; i < 9; i++) {
@@ -141,8 +150,8 @@ module.exports = {
 				bot = true;
 				title = `${player1[0][0].toUpperCase()} VS ${client.user.username.toUpperCase()}`;
 				description = `${player1[0][0]} is ${player1[0][1]}\n${player2[0][0]} is ${player2[0][1]}`;
-				footer = "Make your move!";
-				buttons = [row1, row2, row3];
+				footer = "Are you ready?";
+				buttons = [ready];
 			}
 
 			const sessionEmbed = new MessageEmbed()
@@ -166,7 +175,8 @@ module.exports = {
 			gameEmbed = new MessageEmbed().setColor(color);
 			usernameTurn = player1[turn][0];
 
-			const playerFilter = (i) => i.customId === playerJoinId;
+			const playerFilter = (i) =>
+				i.customId === playerJoinId || i.customId == readyId;
 
 			const playerCollector = msg.channel.createMessageComponentCollector(
 				{
@@ -177,19 +187,22 @@ module.exports = {
 
 			let collectorIdle = true;
 			if (bot) {
-				collectorIdle = false;
+				playerCollector.on("collect", async (i) => {
+					if (i.customId == readyId) {
+						gameEmbed
+							.setTitle(title)
+							.setDescription(`${description}`)
+							.setFooter({ text: footer });
 
-				gameEmbed
-					.setTitle(title)
-					.setDescription(`${description}`)
-					.setFooter({ text: footer });
+						i.update({
+							embeds: [gameEmbed],
+							components: [row1, row2, row3],
+						});
+						collectorIdle = false;
 
-				message.edit({
-					embeds: [gameEmbed],
-					components: [row1, row2, row3],
+						playerCollector.stop();
+					}
 				});
-
-				playerCollector.stop();
 			} else {
 				playerCollector.on("collect", async (i) => {
 					if (i.user.username == msg.author.username) {
