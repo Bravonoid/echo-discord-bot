@@ -22,7 +22,6 @@ module.exports = {
 					.setCustomId(opPlayerId)
 					.setLabel("Player")
 					.setStyle("PRIMARY")
-					.setDisabled(true)
 			)
 			.addComponents(
 				new MessageButton()
@@ -51,6 +50,15 @@ module.exports = {
 		let title;
 		let description;
 		let footer;
+
+		// Player join button
+		const playerJoinId = Math.random().toString();
+		const playerJoin = new MessageActionRow().addComponents(
+			new MessageButton()
+				.setCustomId(playerJoinId)
+				.setLabel("Join")
+				.setStyle("SUCCESS")
+		);
 
 		// TicTacToe Buttons
 		const numberId = [];
@@ -124,12 +132,14 @@ module.exports = {
 			// CONTINUE ON PLAYER
 			if (i.customId === opPlayerId) {
 				bot = false;
-				title = `${player1[0][0].toUpperCase()} vs SOMEONE`;
-				description = `Wait until someone joins your session`;
+				title = `${player1[0][0].toUpperCase()} VS SOMEONE`;
+				description = `Ask your friend to join your session!`;
+				footer = `(I really hope you do have one 🧐)`;
+				buttons = [playerJoin];
 			} else if (i.customId === opBotId) {
 				player2.push([client.user.username, "⭕"]);
 				bot = true;
-				title = `${player1[0][0].toUpperCase()} vs ${client.user.username.toUpperCase()}`;
+				title = `${player1[0][0].toUpperCase()} VS ${client.user.username.toUpperCase()}`;
 				description = `${player1[0][0]} is ${player1[0][1]}\n${player2[0][0]} is ${player2[0][1]}`;
 				footer = "Make your move!";
 				buttons = [row1, row2, row3];
@@ -141,21 +151,36 @@ module.exports = {
 				.setDescription(description)
 				.setFooter({ text: footer });
 
-			if (bot) {
-				i.update({
-					embeds: [sessionEmbed],
-					components: buttons,
-				});
-			}
+			i.update({
+				embeds: [sessionEmbed],
+				components: buttons,
+			});
 		});
 
 		let gameEmbed;
+		let usernameTurn = "";
+		let turn = 0;
+
 		collector.on("end", (collected) => {
 			// Game Embeds
-			gameEmbed = new MessageEmbed().setColor(color).setTitle(title);
+			gameEmbed = new MessageEmbed().setColor(color);
+			usernameTurn = player1[turn][0];
 
+			const playerFilter = (i) => i.customId === playerJoinId;
+
+			const playerCollector = msg.channel.createMessageComponentCollector(
+				{
+					playerFilter,
+					idle: 1000 * 60,
+				}
+			);
+
+			let collectorIdle = true;
 			if (bot) {
+				collectorIdle = false;
+
 				gameEmbed
+					.setTitle(title)
 					.setDescription(`${description}`)
 					.setFooter({ text: footer });
 
@@ -163,53 +188,82 @@ module.exports = {
 					embeds: [gameEmbed],
 					components: [row1, row2, row3],
 				});
-			}
-			// TicTacToe Buttons Responds
-			const gameFilter = (i) => {
-				for (const id of numberId) {
-					i.customId === id;
-				}
-			};
 
-			const gameCollector = msg.channel.createMessageComponentCollector({
-				gameFilter,
-			});
-
-			let pointIndexTemp;
-			const boardPoints = [];
-			for (let i = 0; i < 3; i++) {
-				boardPoints.push([0, 0, 0]);
-			}
-
-			gameCollector.on("collect", async (i) => {
-				if (i.user.username != player1[0][0]) return;
-
-				// Input checker
-				for (let a = 0; a < 9; a++) {
-					let row = row1;
-					const index = a % 3;
-					if (a > 2 && a < 6) {
-						row = row2;
-					} else if (a >= 6) {
-						row = row3;
+				playerCollector.stop();
+			} else {
+				playerCollector.on("collect", async (i) => {
+					if (i.user.username == msg.author.username) {
+						return msg.channel.send(
+							`${msg.author.username}, you cannot play against yourself!`
+						);
 					}
-					if (i.customId == numberId[a]) {
-						row.components[index].setDisabled(true);
-						row.components[index].setLabel(player1[0][1]);
+					if (i.customId === playerJoinId) {
+						collectorIdle = false;
 
-						// Add points to player 1
-						pointIndexTemp = Math.floor(a / 3);
-						boardPoints[pointIndexTemp][a % 3] = 1;
-						break;
+						player2.push([i.user.username, "⭕"]);
+						title = `${player1[0][0].toUpperCase()} VS ${player2[0][0].toUpperCase()}`;
+						description = `${player1[0][0]} is ${player1[0][1]}\n${player2[0][0]} is ${player2[0][1]}`;
+						footer = `${usernameTurn}'s turn`;
+
+						gameEmbed
+							.setTitle(title)
+							.setDescription(`${description}`)
+							.setFooter({ text: footer });
+
+						i.update({
+							embeds: [gameEmbed],
+							components: [row1, row2, row3],
+						});
+
+						playerCollector.stop();
 					}
+				});
+			}
+			playerCollector.on("end", (collected) => {
+				if (collectorIdle) {
+					gameEmbed
+						.setTitle("SESSION TIMEOUTS")
+						.setDescription(
+							"Looks like none of your friends want to play with you 🥲"
+						)
+						.setFooter({
+							text: "Make a new 'tictactoe lobby to play",
+						});
+					return message.edit({
+						embeds: [gameEmbed],
+						components: [],
+					});
 				}
 
-				// Check opponents
-				if (bot) {
-					let botRandom = Math.floor(Math.random() * 9);
-					let botRandomId = numberId[botRandom];
+				// TicTacToe Buttons Responds
+				const gameFilter = (i) => {
+					for (const id of numberId) {
+						i.customId === id;
+					}
+				};
 
-					// Bot Checker
+				const gameCollector =
+					msg.channel.createMessageComponentCollector({
+						gameFilter,
+					});
+
+				let pointIndexTemp;
+				const boardPoints = [];
+				for (let i = 0; i < 3; i++) {
+					boardPoints.push([0, 0, 0]);
+				}
+
+				gameCollector.on("collect", async (i) => {
+					if (i.user.username != usernameTurn) return;
+
+					let label;
+					if (usernameTurn == player1[0][0]) {
+						label = player1[0][1];
+					} else {
+						label = player2[0][1];
+					}
+
+					// Input checker
 					for (let a = 0; a < 9; a++) {
 						let row = row1;
 						const index = a % 3;
@@ -218,53 +272,75 @@ module.exports = {
 						} else if (a >= 6) {
 							row = row3;
 						}
-						if (botRandomId == numberId[a]) {
-							if (row.components[index].disabled) {
-								botRandom = Math.floor(Math.random() * 9);
-								botRandomId = numberId[botRandom];
-								a = 0;
-								continue;
-							}
+						if (i.customId == numberId[a]) {
 							row.components[index].setDisabled(true);
-							row.components[index].setLabel(player2[0][1]);
+							row.components[index].setLabel(label);
 
-							// Add points to player 2
 							pointIndexTemp = Math.floor(a / 3);
-							boardPoints[pointIndexTemp][a % 3] = -1;
+							if (label == player1[0][1]) {
+								// Add points to player 1
+								boardPoints[pointIndexTemp][a % 3] = 1;
+							} else {
+								boardPoints[pointIndexTemp][a % 3] = -1;
+							}
 							break;
 						}
 					}
-				}
 
-				// CHECK FOR A WIN
-				let winner = null;
-				let winButtons = [];
-				// console.log(boardPoints);
-				// Check horizontal
-				for (let i = 0; i < 3; i++) {
-					let totalPoints = 0;
-					winButtons = [];
-					for (let j = 0; j < 3; j++) {
-						totalPoints += boardPoints[i][j];
-						winButtons.push([i, j]);
-					}
-					if (totalPoints == 3) {
-						winner = player1;
-						break;
-					} else if (totalPoints == -3) {
-						winner = player2;
-						break;
-					}
-				}
+					// Check opponents
+					if (bot) {
+						let botRandom = Math.floor(Math.random() * 9);
+						let botRandomId = numberId[botRandom];
 
-				if (!winner) {
-					// Check vertical
+						// Bot Checker
+						for (let a = 0; a < 9; a++) {
+							let row = row1;
+							const index = a % 3;
+							if (a > 2 && a < 6) {
+								row = row2;
+							} else if (a >= 6) {
+								row = row3;
+							}
+							if (botRandomId == numberId[a]) {
+								if (row.components[index].disabled) {
+									botRandom = Math.floor(Math.random() * 9);
+									botRandomId = numberId[botRandom];
+									a = 0;
+									continue;
+								}
+								row.components[index].setDisabled(true);
+								row.components[index].setLabel(player2[0][1]);
+
+								// Add points to player 2
+								pointIndexTemp = Math.floor(a / 3);
+								boardPoints[pointIndexTemp][a % 3] = -1;
+								break;
+							}
+						}
+					} else {
+						turn = (turn + 1) % 2;
+						if (turn == 0) {
+							usernameTurn = player1[0][0];
+						} else if (turn == 1) {
+							usernameTurn = player2[0][0];
+						}
+
+						footer = `${usernameTurn}'s turn`;
+
+						gameEmbed.setFooter({ text: footer });
+					}
+
+					// CHECK FOR A WIN
+					let winner = null;
+					let winButtons = [];
+					// console.log(boardPoints);
+					// Check horizontal
 					for (let i = 0; i < 3; i++) {
 						let totalPoints = 0;
 						winButtons = [];
 						for (let j = 0; j < 3; j++) {
-							totalPoints += boardPoints[j][i];
-							winButtons.push([j, i]);
+							totalPoints += boardPoints[i][j];
+							winButtons.push([i, j]);
 						}
 						if (totalPoints == 3) {
 							winner = player1;
@@ -274,98 +350,115 @@ module.exports = {
 							break;
 						}
 					}
-				}
 
-				if (!winner) {
-					// Check diagonal 1
-					let totalPoints = 0;
-					winButtons = [];
-					for (let i = 0; i < 3; i++) {
-						totalPoints += boardPoints[i][i];
-						winButtons.push([i, i]);
-						if (totalPoints == 3) {
-							winner = player1;
-							break;
-						} else if (totalPoints == -3) {
-							winner = player2;
-							break;
+					if (!winner) {
+						// Check vertical
+						for (let i = 0; i < 3; i++) {
+							let totalPoints = 0;
+							winButtons = [];
+							for (let j = 0; j < 3; j++) {
+								totalPoints += boardPoints[j][i];
+								winButtons.push([j, i]);
+							}
+							if (totalPoints == 3) {
+								winner = player1;
+								break;
+							} else if (totalPoints == -3) {
+								winner = player2;
+								break;
+							}
 						}
 					}
-				}
 
-				if (!winner) {
-					// Check diagonal 2
-					totalPoints = 0;
-					winButtons = [];
-					let sec = 2;
-					for (let i = 0; i < 3; i++) {
-						totalPoints += boardPoints[i][sec];
-						winButtons.push([i, sec]);
-						sec -= 1;
-						if (totalPoints == 3) {
-							winner = player1;
-							break;
-						} else if (totalPoints == -3) {
-							winner = player2;
-							break;
+					if (!winner) {
+						// Check diagonal 1
+						let totalPoints = 0;
+						winButtons = [];
+						for (let i = 0; i < 3; i++) {
+							totalPoints += boardPoints[i][i];
+							winButtons.push([i, i]);
+							if (totalPoints == 3) {
+								winner = player1;
+								break;
+							} else if (totalPoints == -3) {
+								winner = player2;
+								break;
+							}
 						}
 					}
-				}
 
-				// Check if there's a winner
-				if (winner) {
-					// Make every buttons disabled
-					for (let a = 0; a < 9; a++) {
-						let row = row1;
-						const index = a % 3;
-						if (a > 2 && a < 6) {
-							row = row2;
-						} else if (a >= 6) {
-							row = row3;
+					if (!winner) {
+						// Check diagonal 2
+						totalPoints = 0;
+						winButtons = [];
+						let sec = 2;
+						for (let i = 0; i < 3; i++) {
+							totalPoints += boardPoints[i][sec];
+							winButtons.push([i, sec]);
+							sec -= 1;
+							if (totalPoints == 3) {
+								winner = player1;
+								break;
+							} else if (totalPoints == -3) {
+								winner = player2;
+								break;
+							}
 						}
-						row.components[index].setDisabled(true);
 					}
 
-					// Transform the winner's line to SUCCESS
-					for (let i = 0; i < 3; i++) {
-						let row = row1;
-						const index = winButtons[i][1];
-						if (winButtons[i][0] == 1) {
-							row = row2;
-						} else if (winButtons[i][0] == 2) {
-							row = row3;
+					// Check if there's a winner
+					if (winner) {
+						// Make every buttons disabled
+						for (let a = 0; a < 9; a++) {
+							let row = row1;
+							const index = a % 3;
+							if (a > 2 && a < 6) {
+								row = row2;
+							} else if (a >= 6) {
+								row = row3;
+							}
+							row.components[index].setDisabled(true);
 						}
 
-						row.components[index].setStyle("PRIMARY");
-					}
+						// Transform the winner's line to SUCCESS
+						for (let i = 0; i < 3; i++) {
+							let row = row1;
+							const index = winButtons[i][1];
+							if (winButtons[i][0] == 1) {
+								row = row2;
+							} else if (winButtons[i][0] == 2) {
+								row = row3;
+							}
 
-					gameEmbed.setTitle(
-						`${winner[0][0].toUpperCase()} IS THE WINNER!`
-					);
+							row.components[index].setStyle("PRIMARY");
+						}
 
-					if (winner[0][0] == client.user.username) {
-						gameEmbed.setFooter({
-							text: "Imagine losing to a bot 😶",
+						gameEmbed.setTitle(
+							`${winner[0][0].toUpperCase()} IS THE WINNER!`
+						);
+
+						if (winner[0][0] == client.user.username) {
+							gameEmbed.setFooter({
+								text: "Imagine losing to a bot 😶",
+							});
+						} else {
+							gameEmbed.setFooter({ text: "👏 Good game" });
+						}
+
+						i.update({
+							embeds: [gameEmbed],
+							components: [row1, row2, row3],
 						});
+						gameCollector.stop();
 					} else {
-						gameEmbed.setFooter({ text: "👏 Good game" });
+						// Update Board
+						i.update({
+							embeds: [gameEmbed],
+							components: [row1, row2, row3],
+						});
 					}
-
-					i.update({
-						embeds: [gameEmbed],
-						components: [row1, row2, row3],
-					});
-					gameCollector.stop();
-				} else {
-					// Update Board
-					i.update({
-						embeds: [gameEmbed],
-						components: [row1, row2, row3],
-					});
-				}
+				});
 			});
-
-			gameCollector.on("end", (collected) => {});
 		});
 	},
 };
