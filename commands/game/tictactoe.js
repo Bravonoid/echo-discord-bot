@@ -141,7 +141,7 @@ module.exports = {
 			// CONTINUE ON PLAYER
 			if (i.customId === opPlayerId) {
 				bot = false;
-				title = `${player1[0][0].toUpperCase()} VS SOMEONE`;
+				title = `${player1[0][0].toUpperCase()} IS LOOKING FOR AN OPPONENT`;
 				description = `Ask your friend to join your session!`;
 				footer = `(I really hope you do have one 🧐)`;
 				buttons = [playerJoin];
@@ -464,11 +464,40 @@ module.exports = {
 						});
 						gameCollector.stop();
 					} else {
-						// Update Board
-						i.update({
-							embeds: [gameEmbed],
-							components: [row1, row2, row3],
-						});
+						// Check for draw
+						let draw = true;
+						for (let a = 0; a < 9; a++) {
+							let row = row1;
+							const index = a % 3;
+							if (a > 2 && a < 6) {
+								row = row2;
+							} else if (a >= 6) {
+								row = row3;
+							}
+
+							if (!row.components[index].disabled) {
+								draw = false;
+								break;
+							}
+						}
+
+						if (draw) {
+							gameEmbed
+								.setTitle(`GAME ENDED WITH A DRAW!`)
+								.setFooter({ text: "👏 Good game" });
+
+							i.update({
+								embeds: [gameEmbed],
+								components: [row1, row2, row3],
+							});
+							gameCollector.stop();
+						} else {
+							// Update Board
+							i.update({
+								embeds: [gameEmbed],
+								components: [row1, row2, row3],
+							});
+						}
 					}
 				});
 			});
