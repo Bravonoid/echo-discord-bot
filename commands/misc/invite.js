@@ -3,7 +3,7 @@ const { color } = require("../../config.json");
 
 module.exports = {
 	name: "invite",
-	description: "Invite Beta to your desired server",
+	description: `Invite Echo to your desired server`,
 	execute(msg) {
 		const pingEmbed = new MessageEmbed()
 			.setColor(color)

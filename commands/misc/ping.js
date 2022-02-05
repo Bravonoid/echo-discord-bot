@@ -3,7 +3,7 @@ const { color } = require("../../config.json");
 
 module.exports = {
 	name: "ping",
-	description: "Pinging Beta",
+	description: "Pinging Echo",
 	execute(msg) {
 		const pingEmbed = new MessageEmbed()
 			.setColor(color)
