@@ -8,10 +8,9 @@ module.exports = {
 				let total = 0;
 				if (res.members) {
 					total = res.members.size;
-				}
-
-				if (total == 0) {
-					oldState.guild.me.voice.disconnect();
+					if (total == 1) {
+						oldState.guild.me.voice.disconnect();
+					}
 				}
 			});
 
