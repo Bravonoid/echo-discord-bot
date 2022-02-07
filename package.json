@@ -13,7 +13,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/Bravonoid/Beta-BOT.git"
+		"url": "git+https://github.com/Bravonoid/echo-discord-bot.git"
 	},
 	"keywords": [],
 	"author": "Bravonoid",

@@ -277,7 +277,7 @@ module.exports = {
 					player[1] += title.length;
 
 					// check if someone wins
-					if (player[1] >= 100) {
+					if (player[1] >= 10) {
 						usernameTurn = "";
 						const exampleEmbed = new MessageEmbed()
 							.setColor(color)
@@ -285,11 +285,14 @@ module.exports = {
 								`${player[0].toUpperCase()} IS THE WINNER!`
 							)
 							.setDescription(
-								`with total **${player[1]}** points`
+								`with total **${player[1]}** points\n**LEADERBOARD**`
 							)
 							.setFooter({
 								text: `👏 Good game`,
 							});
+
+						// Sort descending
+						players.sort((a, b) => b[1] - a[1]);
 
 						for (let i = 0; i < players.length; i++) {
 							exampleEmbed.addField(
