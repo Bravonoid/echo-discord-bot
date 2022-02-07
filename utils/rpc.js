@@ -5,7 +5,7 @@ const activity = {
 	details: "Classified",
 	state: "On Progress",
 	assets: {
-		large_image: "beta",
+		large_image: "echo",
 		large_text: "Shush!",
 	},
 	buttons: [

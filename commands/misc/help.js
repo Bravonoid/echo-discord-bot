@@ -43,16 +43,18 @@ module.exports = {
 			.setTitle(`${botName.toUpperCase()} AT YOUR SERVICE`)
 			.setDescription(`Version ${version}`)
 			.addField(
-				`ℹ️ ABOUT`,
+				`✅ ABOUT`,
 				`${botName} was developed to run most basic commands including music, minigames, etc.`
 			)
 			.addField(
-				":signal_strength: STATUS",
+				"🔋 STATUS",
 				`As ${botName} is currently still on **development phase**, we can't guarantee that there will be no bugs wandering around. We hope to solve the problems as soon as possible.`
 			)
-			.setImage(client.user.displayAvatarURL())
+			.setImage(
+				`https://cdn.discordapp.com/avatars/${client.user.id}/${client.user.avatar}.png?size=256`
+			)
 			.setFooter({
-				text: `💙Love, ${botName}`,
+				text: `💚Love, ${botName}`,
 			});
 
 		await msg.channel.send({
@@ -93,7 +95,7 @@ module.exports = {
 				});
 
 				title = `GAMING ROOM`;
-				description = `👏 Fun stuff to play along with your friends\n(if you have one 🤔)`;
+				description = `🧩 Fun stuff to play along with your friends\n(if you have one 🤔)`;
 				footer = `🎮 Have fun!`;
 			} else if (i.values[0] == "music") {
 				musicCommands.each((e) => {
