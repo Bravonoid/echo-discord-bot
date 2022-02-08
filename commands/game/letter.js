@@ -277,7 +277,7 @@ module.exports = {
 					player[1] += title.length;
 
 					// check if someone wins
-					if (player[1] >= 10) {
+					if (player[1] >= 100) {
 						usernameTurn = "";
 						const exampleEmbed = new MessageEmbed()
 							.setColor(color)
