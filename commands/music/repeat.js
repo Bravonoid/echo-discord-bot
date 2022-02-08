@@ -22,23 +22,22 @@ module.exports = {
 
 		let repeat = null;
 		// check for repeat removal
-		if (!guildQueue.setRepeatMode(RepeatMode.SONG)) {
-			guildQueue.setRepeatMode(RepeatMode.DISABLED);
-
-			msg.channel.send(`Stop repeating ${guildQueue.songs[0].name}`);
+		if (guildQueue.repeatMode == 1 || guildQueue.repeatMode == 2) {
+			guildQueue.repeatMode = 0;
+			msg.channel.send(`Stop repeating`);
 		} else {
 			if (command.includes("single")) {
-				guildQueue.setRepeatMode(RepeatMode.SONG);
+				guildQueue.repeatMode = 1;
 
 				msg.channel.send(`Repeating ${guildQueue.songs[0].name}`);
 				repeat = "🔂 Single";
 			} else if (command.includes("queue")) {
-				guildQueue.setRepeatMode(RepeatMode.QUEUE);
+				guildQueue.repeatMode = 2;
 
 				msg.channel.send("Repeating the queue");
 				repeat = "🔁 Queue";
 			} else {
-				return msg.channel.send("Repeat single or queue?");
+				msg.channel.send("Repeat single or queue?");
 			}
 		}
 

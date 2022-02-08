@@ -12,7 +12,9 @@ module.exports = {
 			},
 		];
 
-		console.log(`Logged in as ${client.user.tag}!`);
+		console.log(
+			`Logged in as ${client.user.tag}!\nServing ${client.guilds.cache.size} servers`
+		);
 		client.user.setPresence({
 			activities: activities,
 			status: "online",
