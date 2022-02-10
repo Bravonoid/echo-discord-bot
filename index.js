@@ -2,6 +2,14 @@ const { Client, Intents } = require("discord.js");
 const fs = require("fs");
 const { Player } = require("discord-music-player");
 
+let token;
+if (process.env.TOKEN) {
+	token = process.env.TOKEN;
+} else {
+	const key = require("./token.json");
+	token = key.TOKEN;
+}
+
 const client = new Client({
 	intents: [
 		Intents.FLAGS.GUILDS,
@@ -37,9 +45,4 @@ for (const file of eventFiles) {
 	}
 }
 
-if (process.env.TOKEN) {
-	client.login(process.env.TOKEN);
-} else {
-	const { TOKEN } = require("./token.json");
-	client.login(TOKEN);
-}
+client.login(token);

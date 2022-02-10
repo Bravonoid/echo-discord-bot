@@ -1,5 +1,13 @@
 const axios = require("axios");
 
+let token;
+if (process.env.CRYPTO) {
+	token = process.env.CRYPTO;
+} else {
+	const key = require("../../token.json");
+	token = key["X-CMC_PRO_API_KEY"];
+}
+
 async function getCrypto(symbol = "BTC", currency = "USD") {
 	const url = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${symbol}&convert=${currency}`;
 	const urlMeta = `https://pro-api.coinmarketcap.com/v1/cryptocurrency/info?symbol=${symbol}`;
@@ -8,14 +16,14 @@ async function getCrypto(symbol = "BTC", currency = "USD") {
 		const { data } = await axios.get(url, {
 			withCredentials: true,
 			headers: {
-				"X-CMC_PRO_API_KEY": "78256cab-3691-45e2-835b-1f13cb749b9a",
+				"X-CMC_PRO_API_KEY": token,
 			},
 		});
 
 		const dataLogo = await axios.get(urlMeta, {
 			withCredentials: true,
 			headers: {
-				"X-CMC_PRO_API_KEY": "78256cab-3691-45e2-835b-1f13cb749b9a",
+				"X-CMC_PRO_API_KEY": token,
 			},
 		});
 

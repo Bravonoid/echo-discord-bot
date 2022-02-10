@@ -1,8 +1,16 @@
 const axios = require("axios");
 
+let token;
+if (process.env.DICTIONARY) {
+	token = process.env.DICTIONARY;
+} else {
+	const key = require("../../token.json");
+	token = key["DICTIONARY-KEY"];
+}
+
 async function getWordData(word) {
 	word = word.toLowerCase();
-	const url = `https://www.dictionaryapi.com/api/v3/references/collegiate/json/${word}?key=b96c5c46-e8ca-41c4-bd4c-5236bd6cd70f`;
+	const url = `https://www.dictionaryapi.com/api/v3/references/collegiate/json/${word}?key=${token}`;
 
 	try {
 		const getData = await axios.get(url);
