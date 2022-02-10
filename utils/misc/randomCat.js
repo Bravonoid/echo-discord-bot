@@ -2,12 +2,20 @@ const axios = require("axios");
 
 const url = "https://api.thecatapi.com/v1/images/search";
 
+let token;
+if (process.env.CAT) {
+	token = process.env.CAT;
+} else {
+	const key = require("../../token.json");
+	token = key["X-API-KEY"];
+}
+
 async function getRandomCat() {
 	try {
 		const { data } = await axios.get(url, {
 			withCredentials: true,
 			headers: {
-				"X-API-KEY": "126ca83d-881c-4986-a0e7-573f2f097aa0",
+				"X-API-KEY": token,
 			},
 		});
 
