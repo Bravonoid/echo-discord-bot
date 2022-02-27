@@ -8,4 +8,7 @@ if (process.env.DB) {
 	token = key["DB"];
 }
 
-mongoose.connect(token);
+mongoose.connect(token, {
+	useNewUrlParser: true,
+	useUnifiedTopology: true,
+});
