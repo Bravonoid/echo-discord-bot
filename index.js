@@ -2,6 +2,9 @@ const { Client, Intents } = require("discord.js");
 const fs = require("fs");
 const { Player } = require("discord-music-player");
 
+// Connect Database
+require("./db/db");
+
 let token;
 if (process.env.TOKEN) {
 	token = process.env.TOKEN;
