@@ -32,35 +32,27 @@ module.exports = {
 			.addFields(
 				{
 					name: "Currency",
-					value: `\`\`\`${crypto.currency}\`\`\``,
-					inline: true,
+					value: `> ${crypto.currency}`,
 				},
 				{
 					name: "Price",
-					value: `\`\`\`${crypto.price}\`\`\``,
-					inline: true,
+					value: `> ${crypto.price}`,
 				},
-				{ name: "\u200B", value: "\u200B" },
 				{
 					name: "% 1 Day",
-					value: `\`\`\`${crypto.percent24H}\`\`\``,
-					inline: true,
+					value: `> ${crypto.percent24H}`,
 				},
 				{
 					name: "% 7 Day",
-					value: `\`\`\`${crypto.percent7D}\`\`\``,
-					inline: true,
+					value: `> ${crypto.percent7D}`,
 				},
-				{ name: "\u200B", value: "\u200B" },
 				{
 					name: "Volume 1 Day",
-					value: `\`\`\`${crypto.volume24}\`\`\``,
-					inline: true,
+					value: `> ${crypto.volume24}`,
 				},
 				{
 					name: "Market Cap",
-					value: `\`\`\`${crypto.marketCap}\`\`\``,
-					inline: true,
+					value: `> ${crypto.marketCap}`,
 				}
 			)
 			.setTimestamp();

@@ -1,6 +1,6 @@
 module.exports = {
-	name: "say",
-	description: "Command Echo `'say #something`",
+	name: "echo",
+	description: "Command Echo `'echo #something`",
 	execute(msg, args) {
 		if (args[1]) {
 			args.shift();
