@@ -16,7 +16,7 @@ module.exports = {
 			date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
 		}`;
 
-		const state = hours % 12 == date.getHours() ? "AM" : "PM";
+		const state = hours % 12 == hours ? "AM" : "PM";
 		date = `${date} ${state}`;
 
 		// Author
