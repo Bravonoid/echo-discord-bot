@@ -92,6 +92,7 @@ module.exports = {
 			let title = "";
 			let description = "";
 			let footer = "";
+			let safe = true;
 			const command = [];
 
 			if (i.values[0] == "general") {
@@ -119,13 +120,21 @@ module.exports = {
 				description = `🎧 Enjoy your favorite song with these commands\n(There's also some shorthands for your laziness)\n\`\`\`e.g: 'p is 'play\`\`\``;
 				footer = `🎵 Happy listening!`;
 			} else if (i.values[0] == "special") {
-				specialCommands.each((e) => {
-					command.push([e.name, e.description]);
-				});
+				if (!msg.channel.nsfw) {
+					safe = false;
 
-				title = `SPECIAL AREA`;
-				description = `Please, go outside, touch grass\nthis area is **HIGHLY FORBIDDEN**`;
-				footer = `😥 I warned you`;
+					title = `RESTRICTED`;
+					description = `⚠️ Go somewhere **SAFE** to explore further`;
+					footer = ``;
+				} else {
+					specialCommands.each((e) => {
+						command.push([e.name, e.description]);
+					});
+
+					title = `SPECIAL AREA`;
+					description = `Please, go outside, touch grass\nthis area is **HIGHLY FORBIDDEN**`;
+					footer = `😥 I warned you`;
+				}
 			}
 
 			const choosenEmbed = new MessageEmbed()
@@ -134,8 +143,13 @@ module.exports = {
 				.setDescription(description)
 				.setFooter({ text: footer });
 
-			for (let i = 0; i < command.length; i++) {
-				choosenEmbed.addField(`__${command[i][0]}__`, command[i][1]);
+			if (safe) {
+				for (let i = 0; i < command.length; i++) {
+					choosenEmbed.addField(
+						`__${command[i][0]}__`,
+						command[i][1]
+					);
+				}
 			}
 
 			i.update({
