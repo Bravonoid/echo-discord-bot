@@ -4,12 +4,12 @@ const { color } = require("../../config.json");
 
 module.exports = {
 	name: "sumgif",
-	description: "Sends a sus neko image",
+	description: "Touch grass",
 	execute(msg) {
 		const neko = new client();
 		neko.nsfw.randomHentaiGif().then((neko) => {
 			const embed = new MessageEmbed()
-				.setTitle("Neko")
+				.setTitle("Please, touch some grass")
 				.setImage(neko.url)
 				.setColor(color);
 			msg.channel.send({ embeds: [embed] });
