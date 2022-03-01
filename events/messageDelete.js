@@ -9,15 +9,16 @@ module.exports = {
 		// Message manipulation
 		// Date
 		let date = new Date(msg.createdTimestamp);
-		const hours = date.getHours();
-		date = `(${date.getDate()}/${
-			date.getMonth() + 1
-		}/${date.getFullYear()}) - ${hours % 12}:${
-			date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes()
-		}`;
+		const dateInID = date.toLocaleDateString("id-ID");
+		const timeInID = date
+			.toLocaleString("id-ID", {
+				timeStyle: "short",
+				hour12: true,
+			})
+			.replace(".", ":");
 
-		const state = hours % 12 == hours ? "AM" : "PM";
-		date = `${date} ${state}`;
+		date = `(${dateInID}) - ${timeInID} (GMT+7)`;
+		// console.log(date);
 
 		// Author
 		const author = msg.author.id;
