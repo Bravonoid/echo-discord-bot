@@ -32,7 +32,7 @@ const insertData = async (msg, Model, data) => {
 };
 
 // Temporary Function
-const processData = (args, Model, msg) => {
+const processData = async (args, Model, msg) => {
 	// Check amounts
 	let amounts = 1;
 	if (args.length >= 1 && !isNaN(args[args.length - 1])) {
@@ -40,11 +40,10 @@ const processData = (args, Model, msg) => {
 		amounts = parseInt(num);
 	}
 
-	const messages = await Delete.findOne({ id_server: msg.guild.id });
+	const messages = await Model.findOne({ id_server: msg.guild.id });
 	if (!messages) return;
 	const arrayMsg = messages.deleted_msg;
 
-	const arrEmbeds = [];
 	let j = arrayMsg.length;
 
 	if (amounts > j) amounts = j;
@@ -52,7 +51,8 @@ const processData = (args, Model, msg) => {
 	return (data = {
 		amounts,
 		arrayMsg,
+		j,
 	});
 };
 
-module.exports = insertData;
+module.exports = { insertData, processData };

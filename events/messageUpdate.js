@@ -1,10 +1,11 @@
 const { Update } = require("../db/models");
-const insertData = require("../utils/dbUtils");
+const { insertData } = require("../utils/dbUtils");
 
 module.exports = {
 	name: "messageUpdate",
 	execute(msg) {
 		// console.log(msg);
+		if (msg.author.bot) return;
 
 		// Message Manipulation
 		// Manage contents

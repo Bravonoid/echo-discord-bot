@@ -1,5 +1,5 @@
 const { Delete } = require("../db/models");
-const insertData = require("../utils/dbUtils");
+const { insertData } = require("../utils/dbUtils");
 
 module.exports = {
 	name: "messageDelete",

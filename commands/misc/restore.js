@@ -1,25 +1,19 @@
 const { Delete } = require("../../db/models");
 const { MessageEmbed } = require("discord.js");
 const { color } = require("../../config.json");
+const { processData } = require("../../utils/dbUtils");
 
 module.exports = {
 	name: "restore",
 	description: "Restore deleted messages `'restore #amount`",
 	async execute(msg, args) {
-		// Check amounts
-		let amounts = 1;
-		if (args.length >= 1 && !isNaN(args[args.length - 1])) {
-			const num = args.pop();
-			amounts = parseInt(num);
-		}
+		const data = await processData(args, Delete, msg);
 
-		const messages = await Delete.findOne({ id_server: msg.guild.id });
-		if (!messages) return;
-		const arrayMsg = messages.deleted_msg;
+		const amounts = data.amounts;
+		const arrayMsg = data.arrayMsg;
+		let j = data.j;
 
-		let j = arrayMsg.length;
-
-		if (amounts > j) amounts = j;
+		if (!amounts) return;
 
 		const arrEmbeds = [];
 		// Access each data
