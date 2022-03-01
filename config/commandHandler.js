@@ -34,4 +34,15 @@ for (const file of gameFiles) {
 	gameCommands.set(command.name, command);
 }
 
-module.exports = { commands, musicCommands, gameCommands };
+// Special commands
+const specialCommands = new Collection();
+const specialFiles = fs
+	.readdirSync("./commands/special")
+	.filter((file) => file.endsWith(".js"));
+
+for (const file of specialFiles) {
+	const command = require(`../commands/special/${file}`);
+	specialCommands.set(command.name, command);
+}
+
+module.exports = { commands, musicCommands, gameCommands, specialCommands };

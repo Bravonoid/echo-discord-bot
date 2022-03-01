@@ -2,6 +2,7 @@ const {
 	commands,
 	musicCommands,
 	gameCommands,
+	specialCommands,
 } = require("../config/commandHandler");
 const { prefixes } = require("../config.json");
 
@@ -23,6 +24,8 @@ module.exports = {
 		let found = false;
 		let musicFound = false;
 		let gameFound = false;
+		let specialFound = false;
+
 		commands.each((e) => {
 			if (e.name == args[0]) found = true;
 		});
@@ -38,6 +41,9 @@ module.exports = {
 		gameCommands.each((e) => {
 			if (e.name == args[0]) gameFound = true;
 		});
+		specialCommands.each((e) => {
+			if (e.name == args[0]) specialFound = true;
+		});
 
 		// execute command if found on each category
 		if (found) {
@@ -49,13 +55,19 @@ module.exports = {
 					commands,
 					client,
 					musicCommands,
-					gameCommands
+					gameCommands,
+					specialCommands
 				);
 		} else if (musicFound) {
 			let guildQueue = client.player.getQueue(msg.guild.id);
 			musicCommands.get(args[0]).execute(msg, args, client, guildQueue);
 		} else if (gameFound) {
 			gameCommands.get(args[0]).execute(msg, args, client);
+		} else if (specialFound) {
+			// Check for safety
+			if (!msg.channel.nsfw)
+				return msg.channel.send("oof this channel is not safeeee");
+			specialCommands.get(args[0]).execute(msg, args);
 		}
 	},
 };
