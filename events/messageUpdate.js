@@ -1,13 +1,16 @@
-const { Delete } = require("../db/models");
+const { Update } = require("../db/models");
 const insertData = require("../utils/dbUtils");
 
 module.exports = {
-	name: "messageDelete",
-	async execute(msg) {
-		// console.log(msg.content);
-		if (msg.content.startsWith("'echo")) return;
+	name: "messageUpdate",
+	execute(msg) {
+		// console.log(msg);
 
-		// Message manipulation
+		// Message Manipulation
+		// Manage contents
+		const oldContent = msg.content;
+		const newContent = msg.reactions.message.content;
+
 		// Date
 		let date = new Date(msg.createdTimestamp);
 		const dateInID = date.toLocaleDateString("id-ID", {
@@ -31,25 +34,14 @@ module.exports = {
 		const channel = msg.channelId;
 
 		let data = {
-			content: msg.content,
+			old: oldContent,
+			new: newContent,
 			date,
 			author,
 			channel,
 		};
 
-		// Check for attachment
-		const attachment = msg.attachments.first();
-		if (attachment) {
-			data = {
-				content: msg.content,
-				date,
-				author,
-				channel,
-				attachment: attachment.attachment,
-			};
-		}
-
 		// Save to database
-		insertData(msg, Delete, data);
+		insertData(msg, Update, data);
 	},
 };

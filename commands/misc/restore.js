@@ -1,4 +1,4 @@
-const Delete = require("../../db/models");
+const { Delete } = require("../../db/models");
 const { MessageEmbed } = require("discord.js");
 const { color } = require("../../config.json");
 
@@ -17,11 +17,11 @@ module.exports = {
 		if (!messages) return;
 		const arrayMsg = messages.deleted_msg;
 
-		const arrEmbeds = [];
 		let j = arrayMsg.length;
 
 		if (amounts > j) amounts = j;
 
+		const arrEmbeds = [];
 		// Access each data
 		for (let i = amounts - 1; i >= 0; i--) {
 			// Fetch author
