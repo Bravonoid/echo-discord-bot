@@ -1,4 +1,4 @@
-const Delete = require("../db/deletedDB");
+const Delete = require("../db/models");
 
 module.exports = {
 	name: "messageDelete",
@@ -9,11 +9,14 @@ module.exports = {
 		// Message manipulation
 		// Date
 		let date = new Date(msg.createdTimestamp);
-		const dateInID = date.toLocaleDateString("id-ID");
+		const dateInID = date.toLocaleDateString("id-ID", {
+			timeZone: "Asia/Jakarta",
+		});
 		const timeInID = date
 			.toLocaleString("id-ID", {
 				timeStyle: "short",
 				hour12: true,
+				timeZone: "Asia/Jakarta",
 			})
 			.replace(".", ":");
 
