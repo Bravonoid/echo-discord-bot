@@ -8,12 +8,11 @@ module.exports = {
 	description: "Restore deleted messages `'restore #amount`",
 	async execute(msg, args) {
 		const data = await processData(args, Delete, msg);
+		if (!data) return;
 
 		const amounts = data.amounts;
 		const arrayMsg = data.arrayMsg;
 		let j = data.j;
-
-		if (!amounts) return;
 
 		const arrEmbeds = [];
 		// Access each data
