@@ -30,6 +30,7 @@
 		"discord-rpc": "^4.0.1",
 		"discord.js": "^13.6.0",
 		"mongoose": "^6.2.3",
+		"nekos.life": "^2.0.9",
 		"ytdl-core": "^4.10.1"
 	}
 }
