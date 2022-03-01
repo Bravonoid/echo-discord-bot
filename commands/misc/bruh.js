@@ -1,21 +1,20 @@
 const { MessageEmbed } = require("discord.js");
-const akaneko = require('akaneko');
+const akaneko = require("akaneko");
+const { color } = require("../../config.json");
 
 module.exports = {
 	name: "bruh",
 	description: "Get a special picture",
 	async execute(msg) {
-		if (!msg.channel.nsfw){
-			msg.channel.send('oof this channel is not safeeee')
-		}
-		else{
+		if (!msg.channel.nsfw) {
+			msg.channel.send("oof this channel is not safeeee");
+		} else {
 			const embed = new MessageEmbed()
-			.setColor(color)
-			.setTitle(`Here's a COMPLETELY RANDOM SPECIAL PICTURE for you`)
-			.setImage(await akaneko.lewdNeko())
+				.setColor(color)
+				.setTitle(`Here's a COMPLETELY RANDOM SPECIAL PICTURE for you`)
+				.setImage(await akaneko.lewdNeko());
 
-		msg.channel.send({ embeds: [embed] });
+			msg.channel.send({ embeds: [embed] });
 		}
-	
 	},
 };
