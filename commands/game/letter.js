@@ -264,9 +264,7 @@ module.exports = {
 				m.content
 			);
 
-			if (!title) {
-				return;
-			}
+			if (!title) return;
 
 			// clear interval
 			clearInterval(countDown);
@@ -330,7 +328,7 @@ module.exports = {
 				.setFooter({
 					text: `${usernameTurn}'s turn\nEnter a word starting with '${lastSpell}'`,
 				});
-			for (let i = 0; i < count; i++) {
+			for (let i = 0; i < players.length; i++) {
 				exampleEmbed.addField(
 					`${i + 1}. ${players[i][0]} ❤️ ${players[i][2]}`,
 					`Points : ${players[i][1]}`
