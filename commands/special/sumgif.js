@@ -2,7 +2,7 @@ const { MessageEmbed } = require("discord.js");
 const client = require("nekos.life");
 
 module.exports = {
-  name: "neko",
+  name: "sumgif",
   description: "Sends a sus neko image",
   execute(msg) {
     const neko = new client();
