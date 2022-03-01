@@ -12,6 +12,8 @@ module.exports = {
 		const oldContent = msg.content;
 		const newContent = msg.reactions.message.content;
 
+		if (oldContent.length >= 256 || newContent.length >= 256) return;
+
 		// Date
 		let date = new Date(msg.createdTimestamp);
 		const dateInID = date.toLocaleDateString("id-ID", {

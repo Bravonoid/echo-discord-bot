@@ -28,13 +28,18 @@ module.exports = {
 			);
 			channel = channel.name;
 
+			const title = `Edited "${arrayMsg[j - 1].old}" into "${
+				arrayMsg[j - 1].new
+			}"`;
+
+			if (title.length >= 256) {
+				j -= 1;
+				continue;
+			}
+
 			const messageEmbed = new MessageEmbed()
 				.setColor(color)
-				.setTitle(
-					`Edited "${arrayMsg[j - 1].old}" into "${
-						arrayMsg[j - 1].new
-					}"`
-				)
+				.setTitle(title)
 				.setAuthor({
 					name: user.username,
 					iconURL: user.displayAvatarURL(),
@@ -52,6 +57,6 @@ module.exports = {
 			j -= 1;
 		}
 
-		const message = await msg.channel.send({ embeds: arrEmbeds });
+		if (arrEmbeds.length > 0) await msg.channel.send({ embeds: arrEmbeds });
 	},
 };
