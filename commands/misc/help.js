@@ -9,7 +9,15 @@ const { prefixes, color, version } = require("../../config.json");
 module.exports = {
 	name: "help",
 	description: "Help centre",
-	async execute(msg, args, commands, client, musicCommands, gameCommands) {
+	async execute(
+		msg,
+		args,
+		commands,
+		client,
+		musicCommands,
+		gameCommands,
+		specialCommands
+	) {
 		// STARTING POINT
 		// Random ID
 		const menu = Math.random().toString();
@@ -32,6 +40,11 @@ module.exports = {
 						label: "Music",
 						description: "Music station",
 						value: "music",
+					},
+					{
+						label: "Special",
+						description: "Don't you dare",
+						value: "special",
 					},
 				])
 		);
@@ -105,6 +118,14 @@ module.exports = {
 				title = `MUSIC STATION`;
 				description = `🎧 Enjoy your favorite song with these commands\n(There's also some shorthands for your laziness)\n\`\`\`e.g: 'p is 'play\`\`\``;
 				footer = `🎵 Happy listening!`;
+			} else if (i.values[0] == "special") {
+				specialCommands.each((e) => {
+					command.push([e.name, e.description]);
+				});
+
+				title = `SPECIAL AREA`;
+				description = `Please, go outside, touch grass\nthis area is **HIGHLY FORBIDDEN**`;
+				footer = `😥 I warned you`;
 			}
 
 			const choosenEmbed = new MessageEmbed()
