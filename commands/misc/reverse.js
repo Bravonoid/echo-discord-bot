@@ -1,19 +1,19 @@
-const { Delete } = require("../../db/models");
+const { Update } = require("../../db/models");
 const { MessageEmbed } = require("discord.js");
 const { color } = require("../../config.json");
 const { processData } = require("../../utils/dbUtils");
 
 module.exports = {
-	name: "restore",
-	description: "Restore deleted messages `'restore #amount`",
+	name: "reverse",
+	description: "Reverse edited messages `'reverse #amount`",
 	async execute(msg, args) {
-		const data = await processData(args, Delete, msg);
+		// FIX ON REVERSE MESSAGE
+		const data = await processData(args, Update, msg);
+		if (!data) return;
 
 		const amounts = data.amounts;
 		const arrayMsg = data.arrayMsg;
 		let j = data.j;
-
-		if (!amounts) return;
 
 		const arrEmbeds = [];
 		// Access each data
@@ -30,7 +30,11 @@ module.exports = {
 
 			const messageEmbed = new MessageEmbed()
 				.setColor(color)
-				.setTitle(arrayMsg[j - 1].content)
+				.setTitle(
+					`Edited "${arrayMsg[j - 1].old}" into "${
+						arrayMsg[j - 1].new
+					}"`
+				)
 				.setAuthor({
 					name: user.username,
 					iconURL: user.displayAvatarURL(),

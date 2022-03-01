@@ -10,4 +10,14 @@ const Delete = mongoose.model("delete", {
 	},
 });
 
-module.exports = Delete;
+const Update = mongoose.model("update", {
+	id_server: {
+		type: String,
+		required: true,
+	},
+	deleted_msg: {
+		type: Array,
+	},
+});
+
+module.exports = { Delete, Update };
