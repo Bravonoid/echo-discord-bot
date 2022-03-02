@@ -5,10 +5,12 @@ const {
 	specialCommands,
 } = require("../config/commandHandler");
 const { prefixes } = require("../config.json");
+const { insertDataUser } = require("../utils/dbUtils");
+const { Sacred } = require("../db/models");
 
 module.exports = {
 	name: "messageCreate",
-	execute(msg, client) {
+	async execute(msg, client) {
 		if (msg.author.bot) return;
 
 		// check prefix
@@ -64,9 +66,24 @@ module.exports = {
 		} else if (gameFound) {
 			gameCommands.get(args[0]).execute(msg, args, client);
 		} else if (specialFound) {
+			// Save calls
+			const data = {
+				id: msg.author.id,
+				calls: 1,
+			};
+			insertDataUser(msg, Sacred, data);
+
 			// Check for safety
-			if (!msg.channel.nsfw)
-				return msg.channel.send("oof this channel is not safeeee");
+			if (!msg.channel.nsfw) {
+				const botSend = await msg.channel.send(
+					"oof this channel is not safe"
+				);
+				await setTimeout(() => {
+					msg.delete();
+					botSend.delete();
+				}, 10000);
+				return;
+			}
 			specialCommands.get(args[0]).execute(msg, args);
 		}
 	},

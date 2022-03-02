@@ -1,3 +1,6 @@
+const { Sacred } = require("../db/models");
+
+// Array data
 const insertData = async (msg, Model, data) => {
 	// SAVE TO DB
 	// Check for data on the current server
@@ -31,7 +34,6 @@ const insertData = async (msg, Model, data) => {
 	}
 };
 
-// Temporary Function
 const processData = async (args, Model, msg) => {
 	// Check amounts
 	let amounts = 1;
@@ -55,4 +57,41 @@ const processData = async (args, Model, msg) => {
 	});
 };
 
-module.exports = { insertData, processData };
+// User data
+const insertDataUser = async (msg, Model, data) => {
+	// SAVE TO DB
+	// Check for data on the current server
+	const serverMsg = await Model.findOne({ id_server: msg.guild.id });
+	// console.log(serverMsg);
+
+	let dataArray = [data];
+	if (!serverMsg) {
+		data.calls = 1;
+		const userMsg = new Model({
+			id_server: msg.guild.id,
+			users: dataArray,
+		});
+
+		await Model.insertMany(userMsg);
+	} else {
+		dataArray = serverMsg.users;
+		// console.log(dataArray);
+
+		let found = false;
+		dataArray.forEach((data) => {
+			if (data.id == msg.author.id) {
+				data.calls += 1;
+				found = true;
+			}
+		});
+
+		if (!found) dataArray.push(data);
+
+		await Sacred.updateOne(
+			{ id_server: msg.guild.id },
+			{ users: dataArray }
+		);
+	}
+};
+
+module.exports = { insertData, processData, insertDataUser };
