@@ -79,7 +79,9 @@ module.exports = {
 		const guideEmbed = new MessageEmbed()
 			.setColor(color)
 			.setTitle(`${botName.toUpperCase()}'S COMMANDS`)
-			.setDescription(`\`\`\`Use ${prefixes} to trigger ${botName}\`\`\``)
+			.setDescription(
+				`\`\`\`Use ${prefixes} to trigger ${botName}\`\`\`\nDon't forget to exclude \`#\` from the examples given`
+			)
 			.setThumbnail(client.user.displayAvatarURL());
 
 		// Menus collector
