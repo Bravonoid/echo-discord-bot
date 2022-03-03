@@ -192,7 +192,7 @@ module.exports = {
 						gameEmbed
 							.setTitle(title)
 							.setDescription(`${description}`)
-							.setFooter({ text: footer });
+							.setFooter({ text: "Your turn" });
 
 						i.update({
 							embeds: [gameEmbed],
