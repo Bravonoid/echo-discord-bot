@@ -1,5 +1,3 @@
-const { Sacred } = require("../db/models");
-
 // Array data
 const insertData = async (msg, Model, data) => {
 	// SAVE TO DB
@@ -87,7 +85,7 @@ const insertDataUser = async (msg, Model, data) => {
 
 		if (!found) dataArray.push(data);
 
-		await Sacred.updateOne(
+		await Model.updateOne(
 			{ id_server: msg.guild.id },
 			{ users: dataArray }
 		);
