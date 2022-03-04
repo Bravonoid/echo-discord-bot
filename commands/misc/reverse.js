@@ -28,23 +28,23 @@ module.exports = {
 			);
 			channel = channel.name;
 
-			const title = `Edited "${arrayMsg[j - 1].old}" into "${
-				arrayMsg[j - 1].new
-			}"`;
-
-			if (title.length >= 256) {
-				j -= 1;
-				continue;
-			}
-
 			const messageEmbed = new MessageEmbed()
 				.setColor(color)
-				.setTitle(title)
 				.setAuthor({
 					name: user.username,
 					iconURL: user.displayAvatarURL(),
 				})
 				.setDescription(`on **${channel}**`)
+				.addField(
+					"Before",
+					arrayMsg[j - 1].old ? arrayMsg[j - 1].old : "\u200b",
+					true
+				)
+				.addField(
+					"After",
+					arrayMsg[j - 1].new ? arrayMsg[j - 1].new : "\u200b",
+					true
+				)
 				.setFooter({
 					text: arrayMsg[j - 1].date,
 				});

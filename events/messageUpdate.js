@@ -5,7 +5,7 @@ module.exports = {
 	name: "messageUpdate",
 	execute(msg) {
 		// console.log(msg);
-		if (msg.author.bot) return;
+		if (msg.author.bot || msg.content.startsWith("http")) return;
 
 		// Message Manipulation
 		// Manage contents
