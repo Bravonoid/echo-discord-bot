@@ -9,7 +9,7 @@ module.exports = {
 		const neko = new client();
 		neko.nsfw.randomHentaiGif().then((neko) => {
 			const embed = new MessageEmbed()
-				.setTitle("Please, touch some grass")
+				.setTitle("Please, touch grass")
 				.setImage(neko.url)
 				.setColor(color);
 			msg.channel.send({ embeds: [embed] });

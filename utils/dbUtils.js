@@ -92,4 +92,18 @@ const insertDataUser = async (msg, Model, data) => {
 	}
 };
 
-module.exports = { insertData, processData, insertDataUser };
+const processDataUser = async (Model, msg) => {
+	const messages = await Model.findOne({ id_server: msg.guild.id });
+	if (!messages) return;
+	const arrayMsg = messages.users;
+
+	arrayMsg.sort((a, b) => {
+		return a.calls > b.calls ? -1 : 1;
+	});
+
+	return (data = {
+		arrayMsg,
+	});
+};
+
+module.exports = { insertData, processData, insertDataUser, processDataUser };
