@@ -13,31 +13,35 @@ module.exports = {
 
 		const size = data.length > 3 ? 3 : data.length;
 
-		let firstUser = await msg.guild.members.fetch(data[0].id);
-		firstUser = firstUser.user;
+		try {
+			let firstUser = await msg.guild.members.fetch(data[0].id);
+			firstUser = firstUser.user;
 
-		const statsEmbed = new MessageEmbed()
-			.setColor(color)
-			.setTitle(
-				`Congratulations ${firstUser.username}!\nYou are the top ranked ~~hentai~~ enjoyer in this server!`
-			)
-			.setDescription(
-				"Show this achievement to all of your family and friends!\nAlso here's our top 3 list"
-			)
-			.setThumbnail(firstUser.displayAvatarURL())
-			.setFooter({
-				text: "Go outside you f-",
-			});
+			const statsEmbed = new MessageEmbed()
+				.setColor(color)
+				.setTitle(
+					`Congratulations ${firstUser.username}!\nYou are the top ranked ~~hentai~~ enjoyer in this server!`
+				)
+				.setDescription(
+					"Show this achievement to all of your family and friends!\nAlso here's our top 3 list"
+				)
+				.setThumbnail(firstUser.displayAvatarURL())
+				.setFooter({
+					text: "Go outside you f-",
+				});
 
-		for (let i = 0; i < size; i++) {
-			let user = await msg.guild.members.fetch(data[i].id);
-			user = user.user;
+			for (let i = 0; i < size; i++) {
+				let user = await msg.guild.members.fetch(data[i].id);
+				user = user.user;
 
-			statsEmbed.addField(
-				`${i + 1}. ${user.username}`,
-				`with ${data[i].calls} calls`
-			);
+				statsEmbed.addField(
+					`${i + 1}. ${user.username}`,
+					`with ${data[i].calls} calls`
+				);
+			}
+			msg.channel.send({ embeds: [statsEmbed] });
+		} catch (err) {
+			msg.channel.send("Unban zaid cok males ngefix");
 		}
-		msg.channel.send({ embeds: [statsEmbed] });
 	},
 };
