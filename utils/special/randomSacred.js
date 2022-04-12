@@ -4,7 +4,7 @@ async function getAyah() {
 	const random = Math.round(Math.random() * (6236 - 1) + 1);
 
 	const urlArabic = `http://api.alquran.cloud/v1/ayah/${random}`;
-	const urlEn = `http://api.alquran.cloud/v1/ayah/${random}/en.asad`;
+	const urlEn = `http://api.alquran.cloud/v1/ayah/${random}/id.indonesian`;
 
 	// Get arabic ayah
 	const { data } = await axios.get(urlArabic);
