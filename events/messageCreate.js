@@ -6,7 +6,6 @@ const {
 } = require("../config/commandHandler");
 const { prefixes, color } = require("../config.json");
 // const getAyah = require("../utils/special/randomSacred");
-const getFromPost = require("../utils/automation/instagram");
 
 module.exports = {
 	name: "messageCreate",
