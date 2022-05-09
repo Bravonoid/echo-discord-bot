@@ -9,11 +9,19 @@ const { prefixes, color } = require("../config.json");
 const { insertDataUser } = require("../utils/dbUtils");
 const { Sacred } = require("../db/models");
 const getAyah = require("../utils/special/randomSacred");
+const getFromPost = require("../utils/automation/instagram");
 
 module.exports = {
 	name: "messageCreate",
 	async execute(msg, client) {
 		if (msg.author.bot) return;
+
+		// Check if the message is from instagram
+		if (msg.content.startsWith("https://www.instagram.com")) {
+			const shortcode = msg.content.substring(28, msg.content.length - 1);
+			const post = await getFromPost(shortcode);
+			console.log(post);
+		}
 
 		// check prefix
 		let args = "";

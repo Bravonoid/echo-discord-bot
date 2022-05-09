@@ -29,8 +29,10 @@
 		"discord-music-player": "^8.3.1",
 		"discord-rpc": "^4.0.1",
 		"discord.js": "^13.6.0",
+		"instagram-better-scrape": "^1.0.7",
 		"mongoose": "^6.2.3",
 		"nekos.life": "^2.0.9",
+		"scraper-instagram": "^1.0.17",
 		"ytdl-core": "^4.11.0"
 	}
 }
