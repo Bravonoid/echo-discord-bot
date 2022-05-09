@@ -13,11 +13,5 @@ module.exports = {
 					}
 				}
 			});
-
-		// console.log(`${oldState.member.user.username} did something`);
-		// if (oldState.member.user.username == "Autoruns") {
-		// 	await oldState.disconnect();
-		// 	console.log(`${oldState.member.user.username} has been removed`);
-		// }
 	},
 };

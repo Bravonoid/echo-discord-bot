@@ -20,14 +20,4 @@ const Update = mongoose.model("update", {
 	},
 });
 
-const Sacred = mongoose.model("sacred", {
-	id_server: {
-		type: String,
-		required: true,
-	},
-	users: {
-		type: Array,
-	},
-});
-
-module.exports = { Delete, Update, Sacred };
+module.exports = { Delete, Update };

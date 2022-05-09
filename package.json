@@ -22,7 +22,6 @@
 		"@discordjs/opus": "^0.5.3",
 		"@discordjs/rest": "^0.3.0",
 		"@discordjs/voice": "^0.7.5",
-		"akaneko": "^5.2.2",
 		"axios": "^0.25.0",
 		"cheerio": "^1.0.0-rc.10",
 		"discord-api-types": "^0.26.1",
@@ -31,7 +30,6 @@
 		"discord.js": "^13.6.0",
 		"instagram-better-scrape": "^1.0.7",
 		"mongoose": "^6.2.3",
-		"nekos.life": "^2.0.9",
 		"scraper-instagram": "^1.0.17",
 		"ytdl-core": "^4.11.0"
 	}

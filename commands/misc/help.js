@@ -2,22 +2,13 @@ const {
 	MessageActionRow,
 	MessageSelectMenu,
 	MessageEmbed,
-	MessageButton,
 } = require("discord.js");
 const { prefixes, color, version } = require("../../config.json");
 
 module.exports = {
 	name: "help",
 	description: "Help centre",
-	async execute(
-		msg,
-		args,
-		commands,
-		client,
-		musicCommands,
-		gameCommands,
-		specialCommands
-	) {
+	async execute(msg, args, commands, client, musicCommands, gameCommands) {
 		// STARTING POINT
 		// Random ID
 		const menu = Math.random().toString();
@@ -40,11 +31,6 @@ module.exports = {
 						label: "Music",
 						description: "Music station",
 						value: "music",
-					},
-					{
-						label: "Special",
-						description: "Don't you dare",
-						value: "special",
 					},
 				])
 		);
@@ -121,22 +107,6 @@ module.exports = {
 				title = `MUSIC STATION`;
 				description = `🎧 Enjoy your favorite song with these commands\n(There's also some shorthands for your laziness)\n\`\`\`e.g: 'p is 'play\`\`\``;
 				footer = `🎵 Happy listening!`;
-			} else if (i.values[0] == "special") {
-				if (!msg.channel.nsfw) {
-					safe = false;
-
-					title = `RESTRICTED`;
-					description = `⚠️ Go somewhere **SAFE** to explore further`;
-					footer = ``;
-				} else {
-					specialCommands.each((e) => {
-						command.push([e.name, e.description]);
-					});
-
-					title = `SPECIAL AREA`;
-					description = `Please, go outside, touch grass\nthis area is **HIGHLY FORBIDDEN**`;
-					footer = `😥 I warned you`;
-				}
 			}
 
 			const choosenEmbed = new MessageEmbed()
@@ -147,10 +117,7 @@ module.exports = {
 
 			if (safe) {
 				for (let i = 0; i < command.length; i++) {
-					choosenEmbed.addField(
-						`__${command[i][0]}__`,
-						command[i][1]
-					);
+					choosenEmbed.addField(`__${command[i][0]}__`, command[i][1]);
 				}
 			}
 

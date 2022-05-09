@@ -3,8 +3,6 @@ const { prefixes } = require("../config.json");
 module.exports = {
 	name: "ready",
 	execute(client) {
-		// TRY RICH PRESENCE
-
 		const activities = [
 			{
 				name: `${prefixes}help`,
