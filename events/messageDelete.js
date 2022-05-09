@@ -5,12 +5,7 @@ module.exports = {
 	name: "messageDelete",
 	async execute(msg) {
 		// console.log(msg.content);
-		if (
-			msg.content.startsWith("'") ||
-			msg.author.bot ||
-			msg.content.length >= 256
-		)
-			return;
+		if (msg.author.bot || msg.content.length >= 256) return;
 
 		// Message manipulation
 		// Date

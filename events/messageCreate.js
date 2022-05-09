@@ -13,13 +13,6 @@ module.exports = {
 	async execute(msg, client) {
 		if (msg.author.bot) return;
 
-		// Check if the message is from instagram
-		if (msg.content.startsWith("https://www.instagram.com")) {
-			const shortcode = msg.content.substring(26, msg.content.length - 1);
-			const post = await getFromPost(shortcode);
-			console.log(post);
-		}
-
 		// check prefix
 		let args = "";
 		if (msg.content.startsWith(prefixes)) {
