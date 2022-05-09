@@ -70,42 +70,39 @@ module.exports = {
 		} else if (specialFound) {
 			// SPECIAL RAMADHAN
 			// Fragments data
-			let { arabic, translate, surah, ayah } = await getAyah();
+			// let { arabic, translate, surah, ayah } = await getAyah();
 
-			while (arabic.length > 256) {
-				({ arabic, translate, surah, ayah } = await getAyah());
-			}
-
-			const exampleEmbed = new MessageEmbed()
-				.setColor(color)
-				.setTitle(arabic)
-				.setDescription(translate)
-				.setFooter({
-					text: `(${surah} : ${ayah})`,
-				});
-
-			msg.channel.send({ embeds: [exampleEmbed] });
-
-			// UNCOMMENT AFTER RAMADHAN IS DONE
-			// // Save calls
-			// const data = {
-			// 	id: msg.author.id,
-			// 	calls: 1,
-			// };
-			// insertDataUser(msg, Sacred, data);
-
-			// // Check for safety
-			// if (!msg.channel.nsfw) {
-			// 	const botSend = await msg.channel.send(
-			// 		"oof this channel is not safe"
-			// 	);
-			// 	await setTimeout(() => {
-			// 		msg.delete();
-			// 		botSend.delete();
-			// 	}, 10000);
-			// 	return;
+			// while (arabic.length > 256) {
+			// 	({ arabic, translate, surah, ayah } = await getAyah());
 			// }
-			// specialCommands.get(args[0]).execute(msg, args);
+
+			// const exampleEmbed = new MessageEmbed()
+			// 	.setColor(color)
+			// 	.setTitle(arabic)
+			// 	.setDescription(translate)
+			// 	.setFooter({
+			// 		text: `(${surah} : ${ayah})`,
+			// 	});
+
+			// msg.channel.send({ embeds: [exampleEmbed] });
+
+			// Save calls
+			const data = {
+				id: msg.author.id,
+				calls: 1,
+			};
+			insertDataUser(msg, Sacred, data);
+
+			// Check for safety
+			if (!msg.channel.nsfw) {
+				const botSend = await msg.channel.send("oof this channel is not safe");
+				await setTimeout(() => {
+					msg.delete();
+					botSend.delete();
+				}, 10000);
+				return;
+			}
+			specialCommands.get(args[0]).execute(msg, args);
 		}
 	},
 };
